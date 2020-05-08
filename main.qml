@@ -8,40 +8,67 @@ ApplicationWindow {
     height: 480
     title: qsTr("Scroll")
 
-    // testing data fetching...
-    function getData(url, callback) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = (function(data) {
-            return function() {
-                if (data.readystate === 4) {
-                    callback(data);
-                }
-            }
-        })(xhttp);
-        xhttp.open("GET", url);
-        xhttp.send();
+    Component.onCompleted: {
 
+
+        /**
+             *  Need to refactor this..
+             *  Probably should create a helper file for JS functions..
+            **/
+        var req = new XMLHttpRequest()
+        req.open("GET", "https://qtphone.herokuapp.com/contact", true)
+        req.onload = function () {
+            var objectArray = JSON.parse(req.responseText)
+
+            for (var i = 0; i < objectArray.length; i++) {
+                listView.model.append({
+                                          "name": objectArray[i].firstname + " "
+                                          + objectArray[i].lastname
+                                      })
+                console.log(objectArray[i].firstname)
+            }
+        }
+        req.send()
+
+        console.log("blii bloo")
     }
 
-    Component.onCompleted: {
-        for (var i = 0; i < 10; i++) {
-            listView.model.append({ textLoc: "Contact " + i })
-        }
-
-        getData("https://qtphone.herokuapp.com/contact", function(fn) {
-            if (fn.status === 200) {
-                console.log(fn.responseText);
-            } else {
-                console.log("error occurred")
+    ListModel {
+        id: contactModel
+    }
+    Component {
+        id: contactDelegate
+        Rectangle {
+            id: contactId
+            width: appWindow.width
+            height: appWindow.height / 10
+            color: "#2C2C2C"
+            Text {
+                color: "#fff"
+                text: name
             }
-        })
+
+            Button {
+                id: button
+                text: "add"
+                anchors.right: parent.right
+                background: Rectangle {
+                    implicitWidth: 50
+                    implicitHeight: 20
+                    color: button.down ? "black" : "#2C2C2C"
+                    border.color: "#ff4"
+                    border.width: 1
+                    radius: 4
+                }
+            }
+        }
     }
 
     ListView {
         id: listView
         anchors.fill: parent
-        width: parent.width
-        model: ListModel {}
+        delegate: contactDelegate
+        model: ContactsModel {}
         spacing: 5
 
         headerPositioning: ListView.OverlayHeader
@@ -58,33 +85,14 @@ ApplicationWindow {
                 font.pointSize: 20
             }
         }
-
-        delegate: Rectangle {
-            id: contactId
-            width: appWindow.width
-            height: appWindow.height / 10
-            color: "#2C2C2C"
-            Text {
-                color: "#fff"
-                text: textLoc
-            }
-
-            Button {
-                id: button
-                text: "add"
-                anchors.right: parent.right
-                background: Rectangle {
-                    implicitWidth: 50
-                    implicitHeight: 20
-                    color: button.down ? "black" : "#2C2C2C"
-                    border.color: "#ff4"
-                    border.width: 1
-                    radius: 4
-
-                }
-            }
-        }
-
     }
+    footer: Rectangle {
+        width: parent.width
+        height: 50
+        z: 2
 
+        TextInput {
+            text: qsTr("Syötä tekstiä tähän...")
+        }
+    }
 }
