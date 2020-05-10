@@ -1,5 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
+import "ApiHelper.js" as Api
 
 ApplicationWindow {
     id: appWindow
@@ -8,29 +9,14 @@ ApplicationWindow {
     height: 480
     title: qsTr("Scroll")
 
+    //    StackView {
+    //        id: daStack
+    //        initialItem: listView
+    //        visible: true
+    //    }
     Component.onCompleted: {
-
-
-        /**
-             *  Need to refactor this..
-             *  Probably should create a helper file for JS functions..
-            **/
-        var req = new XMLHttpRequest()
-        req.open("GET", "https://qtphone.herokuapp.com/contact", true)
-        req.onload = function () {
-            var objectArray = JSON.parse(req.responseText)
-
-            for (var i = 0; i < objectArray.length; i++) {
-                listView.model.append({
-                                          "name": objectArray[i].firstname + " "
-                                          + objectArray[i].lastname
-                                      })
-                console.log(objectArray[i].firstname)
-            }
-        }
-        req.send()
-
-        console.log("blii bloo")
+        Api.func()
+        Api.fetchContacts(listView)
     }
 
     ListModel {
@@ -43,24 +29,79 @@ ApplicationWindow {
             width: appWindow.width
             height: appWindow.height / 10
             color: "#2C2C2C"
-            Text {
-                color: "#fff"
-                text: name
-            }
 
-            Button {
-                id: button
-                text: "add"
-                anchors.right: parent.right
-                background: Rectangle {
-                    implicitWidth: 50
-                    implicitHeight: 20
-                    color: button.down ? "black" : "#2C2C2C"
-                    border.color: "#ff4"
-                    border.width: 1
-                    radius: 4
+            Item {
+                id: iconContainer
+                width: 50
+                height: 50
+
+                Image {
+                    id: contactIcon
+                    //placeholder icon, replace with something..
+                    source: "https://cdn.onlinewebfonts.com/svg/img_411575.png"
+                    width: 30
+                    height: 30
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
+
+            Item {
+                id: infoContainer
+                anchors {
+                    right: iconContainer.right
+                }
+
+                Text {
+                    id: firstName
+                    color: "#fff"
+                    text: contactName
+                    x: 10
+                }
+
+                Text {
+                    id: phoneNumber
+                    color: "#e0e0e0"
+                    text: contactNumber
+                    x: 10
+                    anchors {
+                        top: firstName.bottom
+                    }
+                }
+
+                //                Rectangle {
+                //                    id: nameRec
+                //                    width: parent.width
+                //                    Text {
+                //                        id: firstName
+                //                        color: "#fff"
+                //                        text: contactName
+                //                    }
+                //                }
+                //                Rectangle {
+                //                    id: phoneRec
+                //                    width: parent.width
+                //                    Text {
+                //                        id: phoneNumber
+                //                        color: "#fff"
+                //                        text: contactNumber
+                //                    }
+                //                }
+            }
+
+            //            Button {
+            //                id: button
+            //                text: "add"
+            //                anchors.right: parent.right
+            //                background: Rectangle {
+            //                    implicitWidth: 50
+            //                    implicitHeight: 20
+            //                    color: button.down ? "black" : "#2C2C2C"
+            //                    border.color: "#ff4"
+            //                    border.width: 1
+            //                    radius: 4
+            //                }
+            //            }
         }
     }
 
@@ -68,7 +109,7 @@ ApplicationWindow {
         id: listView
         anchors.fill: parent
         delegate: contactDelegate
-        model: ContactsModel {}
+        model: contactModel
         spacing: 5
 
         headerPositioning: ListView.OverlayHeader
@@ -79,20 +120,30 @@ ApplicationWindow {
             width: parent.width
             height: 50
             z: 2
-            Text {
-                text: "Contactlist"
-                color: "#fff"
-                font.pointSize: 20
+            TextInput {
+                width: parent.width
+                height: parent.height
+                text: "Search.."
             }
         }
     }
-    footer: Rectangle {
-        width: parent.width
-        height: 50
-        z: 2
+    footer: TabBar {
 
-        TextInput {
-            text: qsTr("Syötä tekstiä tähän...")
+
+        /**
+          * Implement Navigations..
+          **/
+        id: navigator
+        width: parent.width
+
+        TabButton {
+            text: qsTr("Contacts")
+        }
+        TabButton {
+            text: qsTr("My Contacts")
+        }
+        TabButton {
+            text: qsTr("Misc")
         }
     }
 }

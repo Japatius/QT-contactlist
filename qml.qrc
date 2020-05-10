@@ -4,5 +4,7 @@
         <file>qtquickcontrols2.conf</file>
         <file>ContactItem.qml</file>
         <file>ContactsModel.qml</file>
+        <file>ApiHelper.js</file>
+        <file>MyContacts.qml</file>
     </qresource>
 </RCC>
