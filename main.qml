@@ -1,6 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.2
 import "ApiHelper.js" as Api
 
 ApplicationWindow {
@@ -16,20 +17,30 @@ ApplicationWindow {
         Api.fetchContactById("20")
     }
 
-    //    Dialog {
-    //        id: contactDialog
-    //        title: "Piisami Sami"
-    //        width: parent.width
-    //        height: parent.height
-    //        standardButtons: Dialog.Ok | Dialog.Cancel
+    Loader {
+        id: dialogLoader
+        sourceComponent: diaComp
+        active: false
+    }
 
-    //        onAccepted: console.log("Ok clicked")
-    //        onRejected: console.log("Cancel clicked")
-    //    }
+    Component {
+        id: diaComp
+        Dialog {
+            id: contactDialogId
+            contentItem: ContactDialog {
+                id: contactContentItemId
+                cancelButton.onClicked: {
+                    contactDialogId.close()
+                }
+            }
+            standardButtons: StandardButton.Ok
+        }
+    }
+
     footer: TabBar {
         id: navigator
         width: parent.width
-
+        currentIndex: swiper.currentIndex
         TabButton {
             text: qsTr("Contacts")
         }
@@ -41,9 +52,11 @@ ApplicationWindow {
         }
     }
 
-    StackLayout {
-        currentIndex: navigator.currentIndex
+    SwipeView {
+        id: swiper
         anchors.fill: parent
+        currentIndex: navigator.currentIndex
+
         Item {
             id: contactsView
             ListView {
@@ -61,16 +74,16 @@ ApplicationWindow {
                     width: parent.width
                     height: 50
                     z: 2
-                    TextInput {
-                        color: "#fff"
-                        width: parent.width
-                        height: parent.height
-                        text: "Search.."
+                    //                    TextInput {
+                    //                        color: "#fff"
+                    //                        width: parent.width
+                    //                        height: parent.height
+                    //                        text: "Search.."
 
-                        anchors {
-                            verticalCenter: verticalCenter
-                        }
-                    }
+                    //                        anchors {
+                    //                            verticalCenter: verticalCenter
+                    //                        }
+                    //                    }
                 }
             }
         }
@@ -85,4 +98,49 @@ ApplicationWindow {
             }
         }
     }
+
+    //    StackLayout {
+    //        currentIndex: navigator.currentIndex
+    //        anchors.fill: parent
+    //        Item {
+    //            id: contactsView
+    //            ListView {
+    //                id: listView
+    //                anchors.fill: parent
+    //                delegate: ContactItem {}
+    //                model: ContactsModel {}
+    //                spacing: 5
+
+    //                headerPositioning: ListView.OverlayHeader
+    //                header: Rectangle {
+    //                    id: header
+    //                    color: "#2C2C2C"
+    //                    border.color: "#fff"
+    //                    width: parent.width
+    //                    height: 50
+    //                    z: 2
+    //                    //                    TextInput {
+    //                    //                        color: "#fff"
+    //                    //                        width: parent.width
+    //                    //                        height: parent.height
+    //                    //                        text: "Search.."
+
+    //                    //                        anchors {
+    //                    //                            verticalCenter: verticalCenter
+    //                    //                        }
+    //                    //                    }
+    //                }
+    //            }
+    //        }
+
+    //        MyContacts {}
+
+    //        Item {
+    //            id: misc
+    //            Text {
+    //                id: hioh
+    //                text: qsTr("Blyat vadim!")
+    //            }
+    //        }
+    //    }
 }

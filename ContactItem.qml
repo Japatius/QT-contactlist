@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick 2.13
+import QtQuick.Controls 2.13
 
 Component {
     id: contactDelegate
@@ -7,10 +8,14 @@ Component {
         width: appWindow.width
         height: appWindow.height / 10
         color: "#2C2C2C"
+
         MouseArea {
+
             anchors.fill: parent
             onClicked: {
-                ContactDialog.Open
+                dialogLoader.active = false
+                dialogLoader.active = true
+                dialogLoader.item.open()
             }
         }
 
@@ -37,6 +42,13 @@ Component {
             }
 
             Text {
+                visible: false
+                id: idOfContact
+                text: id
+                color: "#fff"
+            }
+
+            Text {
                 id: firstName
                 color: "#fff"
                 text: contactName
@@ -46,7 +58,7 @@ Component {
             Text {
                 id: phoneNumber
                 color: "#e0e0e0"
-                text: contactNumber
+                text: contactNumber ? contactNumber : "No number entered.."
                 x: 10
                 anchors {
                     top: firstName.bottom

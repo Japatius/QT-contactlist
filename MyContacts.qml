@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.13
+import "ApiHelper.js" as Api
 
 Item {
     id: savedContact
@@ -8,10 +9,6 @@ Item {
 
         TextField {
             id: enterText
-            validator: IntValidator {
-                bottom: 1
-                top: 100
-            }
             text: qsTr("Jada jada jada..")
         }
     }
@@ -29,11 +26,7 @@ Item {
             radius: 4
         }
         onClicked: {
-            if (enterText.text.length === 0) {
-                console.log("Tyhjä")
-            } else {
-                console.log(enterText.text)
-            }
+            Api.createContact(enterText.text)
         }
     }
 }

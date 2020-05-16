@@ -19,7 +19,7 @@ function fetchContacts(viewId) {
                                     "contactName": objectArray[i].firstname
                                     + " " + objectArray[i].lastname,
                                     "contactNumber": objectArray[i].mobile,
-                                    "idOfContact": objectArray[i].id
+                                    "id": objectArray[i].id
                                 })
             console.log(objectArray[i].firstname)
         }
@@ -33,10 +33,14 @@ function fetchContacts(viewId) {
   **/
 function fetchContactById(id) {
     var req = new XMLHttpRequest()
-    req.open("GET", URL + id, true)
+    req.open("GET", "https://qtphone.herokuapp.com/contact/" + id, true)
     req.onload = function () {
         var objectArray = JSON.parse(req.responseText)
-        console.log("with id: ", objectArray)
+        for (var i = 0; i < objectArray.length; i++) {
+
+            console.log("with id: ", objectArray[i].id,
+                        objectArray[i].firstname)
+        }
     }
     req.send()
 }
@@ -45,19 +49,54 @@ function fetchContactById(id) {
 /**
   * Create a new contact
   **/
-function createContact(firstname, lastname, mobile, email) {
+function createContact(firstname) {
     var req = new XMLHttpRequest()
     req.open("POST", URL, true)
     req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-    req.onload = function () {}
-    req.send()
+
+    //    var data = {
+    //        "firstname": firstname
+    //    }
+    //    var formattedData = data
+
+    //    req.onreadystatechange = function () {
+    //        if (req.readyState === 4 && req.status === 201) {
+    //            console.log("Contact created")
+    //        } else {
+    //            console.log("Something went wrong")
+    //        }
+    //    }
+    req.send({
+                 "firstname": firstname
+             })
 }
 
 
 /**
   * Update a contact
   **/
-function updateContact() {}
+function updateContact() {
+    // TODO: Make it take an id from item
+    var data = {}
+    data.firstname = "Koksal"
+    data.lastname = "Baba"
+    data.mobile = "+90-12323"
+    data.email = "koksal.baba@turkey.tr"
+    var json = JSON.stringify(data)
+
+    var xhr = new XMLHttpRequest()
+    xhr.open("PUT", URL + '/48', true)
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
+    xhr.onload = function () {
+        var users = JSON.parse(xhr.responseText)
+        if (xhr.readyState === 4 && xhr.status === "200") {
+            console.log(users)
+        } else {
+            console.error(users)
+        }
+    }
+    xhr.send(json)
+}
 
 
 /**
