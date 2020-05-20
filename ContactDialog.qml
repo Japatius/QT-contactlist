@@ -7,7 +7,7 @@ Item {
     id: contactDialog
     width: appWindow.width
     height: 600
-    signal recievedId
+    property string recievedId
     property alias okButton: okButton
     property alias cancelButton: cancelButton
     property string title: "Foo Bar"
@@ -25,10 +25,10 @@ Item {
     property string blackColor: "#000000"
 
     // toggling edit state for inputs
-    property bool fnameEdit: true
-    property bool lnameEdit: true
-    property bool emailEdit: true
-    property bool mobileEdit: true
+    property bool fnameEdit: false
+    property bool lnameEdit: false
+    property bool emailEdit: false
+    property bool mobileEdit: false
 
     property int titleSize: 48
     property int tstid: 16
@@ -36,7 +36,7 @@ Item {
     Component.onCompleted: {
         var req = new XMLHttpRequest()
         // TODO: Pass ID when opening dialog
-        req.open("GET", "https://qtphone.herokuapp.com/contact/58", true)
+        req.open("GET", "https://qtphone.herokuapp.com/contact/16", true)
         req.onload = function () {
             var objectArray = JSON.parse(req.responseText)
             for (var i = 0; i < objectArray.length; i++) {
@@ -45,221 +45,229 @@ Item {
                 email = objectArray[i].email
                 mobile = objectArray[i].mobile
                 console.log(fName, lName, email, mobile)
+                console.log(recievedId)
             }
         }
         req.send()
     }
 
     Component.onDestruction: {
-        console.log("Kiitti ei kuittia")
+        Api.fetchContacts()
     }
 
-    Column {
+    Rectangle {
+        id: backgroundRectangle
+        height: parent.height
         width: appWindow.width
-        spacing: 10
-        anchors.fill: parent
-
-        Rectangle {
-            width: 100
-            height: 100
-            color: whiteColor
-            radius: width * 0.5
-            anchors.horizontalCenter: parent.horizontalCenter
-            Text {
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    verticalCenter: parent.verticalCenter
+        color: "#757575"
+        Column {
+            width: appWindow.width
+            spacing: 10
+            anchors.fill: parent
+            Rectangle {
+                width: 100
+                height: 100
+                color: whiteColor
+                radius: width * 0.5
+                anchors.horizontalCenter: parent.horizontalCenter
+                Text {
+                    anchors {
+                        horizontalCenter: parent.horizontalCenter
+                        verticalCenter: parent.verticalCenter
+                    }
+                    id: contactDialogName
+                    text: fName.charAt(0)
+                    font.pointSize: titleSize
+                    color: blackColor
                 }
-                id: contactDialogName
-                text: title.charAt(0)
-                font.pointSize: titleSize
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 60
                 color: blackColor
-            }
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 60
-            color: blackColor
-            Text {
-                id: fNameTextId
-                color: whiteColor
-                text: fNameText
-            }
-
-            TextField {
-                anchors {
-                    left: fNameTextId.right
+                Text {
+                    id: fNameTextId
+                    color: whiteColor
+                    text: fNameText
                 }
 
-                id: firstNameInput
-                readOnly: fnameEdit
-                text: fName
-                color: whiteColor
-            }
-        }
+                TextField {
+                    anchors {
+                        left: fNameTextId.right
+                    }
 
-        Rectangle {
-            width: parent.width
-            height: 60
-            color: blackColor
-            Text {
-                id: lNameTextId
-                color: whiteColor
-                text: lNameText
-            }
-
-            TextField {
-                anchors {
-                    left: lNameTextId.right
+                    id: firstNameInput
+                    readOnly: fnameEdit
+                    text: fName
+                    color: whiteColor
                 }
-                id: lastNameInput
-                readOnly: lnameEdit
-                text: lName
-                color: whiteColor
-            }
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 60
-            color: blackColor
-            Text {
-                id: mobileTextId
-                color: whiteColor
-                text: mobileText
             }
 
-            TextField {
-                anchors {
-                    left: mobileTextId.right
+            Rectangle {
+                width: parent.width
+                height: 60
+                color: blackColor
+                Text {
+                    id: lNameTextId
+                    color: whiteColor
+                    text: lNameText
                 }
-                id: mobileInput
-                readOnly: lnameEdit
-                text: mobile
-                color: whiteColor
-            }
-        }
 
-        Rectangle {
-            width: parent.width
-            height: 60
-            color: blackColor
-            Text {
-                id: emailTextId
-                color: whiteColor
-                text: emailText
-            }
-
-            TextField {
-                anchors {
-                    left: emailTextId.right
-                    leftMargin: 10
+                TextField {
+                    anchors {
+                        left: lNameTextId.right
+                    }
+                    id: lastNameInput
+                    readOnly: lnameEdit
+                    text: lName
+                    color: whiteColor
                 }
-                id: emailInput
-                readOnly: lnameEdit
-                text: email
-                color: whiteColor
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 60
+                color: blackColor
+                Text {
+                    id: mobileTextId
+                    color: whiteColor
+                    text: mobileText
+                }
+
+                TextField {
+                    anchors {
+                        left: mobileTextId.right
+                    }
+                    id: mobileInput
+                    readOnly: lnameEdit
+                    text: mobile
+                    color: whiteColor
+                }
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 60
+                color: blackColor
+                Text {
+                    id: emailTextId
+                    color: whiteColor
+                    text: emailText
+                }
+
+                TextField {
+                    anchors {
+                        left: emailTextId.right
+                        leftMargin: 10
+                    }
+                    id: emailInput
+                    readOnly: lnameEdit
+                    text: email
+                    color: whiteColor
+                }
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 60
+                color: blackColor
+                Button {
+                    text: "Test"
+                    onClicked: {
+                        Api.updateContact(firstNameInput.text,
+                                          lastNameInput.text, mobileInput.text,
+                                          emailInput.text)
+                    }
+                }
             }
         }
 
-        Rectangle {
-            width: parent.width
-            height: 60
-            color: blackColor
+        //    Rectangle {
+        //        width: parent.width
+        //        height: parent.height
+
+        //        Text {
+        //            anchors {
+        //                horizontalCenter: parent.horizontalCenter
+        //            }
+        //            id: contactDialogName
+        //            text: title
+        //            font.pointSize: titleSize
+        //        }
+
+        //        Text {
+        //            id: firstName
+        //            text: fNameText
+        //            anchors.baseline: firstNameInput.baseline
+        //        }
+
+        //        TextField {
+        //            anchors.top: contactDialogName.bottom
+        //            anchors {
+        //                top: contactDialogName.bottom
+        //                horizontalCenter: parent.horizontalCenter
+        //            }
+        //            id: firstNameInput
+        //            readOnly: fnameEdit
+        //            placeholderTextColor: "black"
+        //            placeholderText: qsTr("Enter firstname..")
+        //        }
+
+        //        Text {
+        //            id: lastName
+        //            text: lNameText
+        //            anchors.baseline: lastNameInput.baseline
+        //        }
+
+        //        TextField {
+        //            anchors {
+        //                top: firstNameInput.bottom
+        //                horizontalCenter: parent.horizontalCenter
+        //            }
+        //            id: lastNameInput
+        //            readOnly: lnameEdit
+        //            placeholderTextColor: "black"
+        //            placeholderText: qsTr("Enter lastname..")
+        //        }
+
+        //        Button {
+        //            // TODO: make into icon button
+        //            id: toggleFnameButton
+        //            text: "tglFname"
+        //            anchors.left: firstNameInput.right
+        //        }
+
+        //        Button {
+        //            // TODO: make into icon button
+        //            id: toggleLnameButton
+        //            text: "tgLname"
+        //            anchors.left: lastNameInput.right
+        //        }
+
+        //        Button {
+        //            id: updateBtn
+        //            text: "Update"
+        //            onClicked: {
+        //                console.log("Do updating..")
+        //            }
+        //            anchors {
+        //                horizontalCenter: parent.horizontalCenter
+        //                top: lastNameInput.bottom
+        //            }
+        //        }
+        //    }
+        Row {
+            anchors.bottom: backgroundRectangle.bottom
             Button {
-                text: "Test"
-                onClicked: {
-                    Api.updateContact()
-                }
+                id: okButton
+                text: "OK"
             }
-        }
-    }
 
-    //    Rectangle {
-    //        width: parent.width
-    //        height: parent.height
-
-    //        Text {
-    //            anchors {
-    //                horizontalCenter: parent.horizontalCenter
-    //            }
-    //            id: contactDialogName
-    //            text: title
-    //            font.pointSize: titleSize
-    //        }
-
-    //        Text {
-    //            id: firstName
-    //            text: fNameText
-    //            anchors.baseline: firstNameInput.baseline
-    //        }
-
-    //        TextField {
-    //            anchors.top: contactDialogName.bottom
-    //            anchors {
-    //                top: contactDialogName.bottom
-    //                horizontalCenter: parent.horizontalCenter
-    //            }
-    //            id: firstNameInput
-    //            readOnly: fnameEdit
-    //            placeholderTextColor: "black"
-    //            placeholderText: qsTr("Enter firstname..")
-    //        }
-
-    //        Text {
-    //            id: lastName
-    //            text: lNameText
-    //            anchors.baseline: lastNameInput.baseline
-    //        }
-
-    //        TextField {
-    //            anchors {
-    //                top: firstNameInput.bottom
-    //                horizontalCenter: parent.horizontalCenter
-    //            }
-    //            id: lastNameInput
-    //            readOnly: lnameEdit
-    //            placeholderTextColor: "black"
-    //            placeholderText: qsTr("Enter lastname..")
-    //        }
-
-    //        Button {
-    //            // TODO: make into icon button
-    //            id: toggleFnameButton
-    //            text: "tglFname"
-    //            anchors.left: firstNameInput.right
-    //        }
-
-    //        Button {
-    //            // TODO: make into icon button
-    //            id: toggleLnameButton
-    //            text: "tgLname"
-    //            anchors.left: lastNameInput.right
-    //        }
-
-    //        Button {
-    //            id: updateBtn
-    //            text: "Update"
-    //            onClicked: {
-    //                console.log("Do updating..")
-    //            }
-    //            anchors {
-    //                horizontalCenter: parent.horizontalCenter
-    //                top: lastNameInput.bottom
-    //            }
-    //        }
-    //    }
-    Row {
-        anchors.bottom: contactDialog.bottom
-        Button {
-            id: okButton
-            text: "OK"
-        }
-
-        Button {
-            id: cancelButton
-            text: "NOPE"
+            Button {
+                id: cancelButton
+                text: "NOPE"
+            }
         }
     }
 }

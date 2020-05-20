@@ -7,5 +7,6 @@
         <file>ApiHelper.js</file>
         <file>MyContacts.qml</file>
         <file>ContactDialog.qml</file>
+        <file>CreateContactDialog.qml</file>
     </qresource>
 </RCC>

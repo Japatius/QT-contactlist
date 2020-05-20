@@ -23,6 +23,12 @@ ApplicationWindow {
         active: false
     }
 
+    Loader {
+        id: createContactLoader
+        sourceComponent: createComp
+        active: false
+    }
+
     Component {
         id: diaComp
         Dialog {
@@ -32,6 +38,17 @@ ApplicationWindow {
                 cancelButton.onClicked: {
                     contactDialogId.close()
                 }
+            }
+            standardButtons: StandardButton.Ok
+        }
+    }
+
+    Component {
+        id: createComp
+        Dialog {
+            id: createContactDialogId
+            contentItem: CreateContactDialog {
+                id: createContactContentId
             }
             standardButtons: StandardButton.Ok
         }
@@ -52,6 +69,10 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: contactModel
+    }
+
     SwipeView {
         id: swiper
         anchors.fill: parent
@@ -59,11 +80,89 @@ ApplicationWindow {
 
         Item {
             id: contactsView
+
             ListView {
                 id: listView
                 anchors.fill: parent
-                delegate: ContactItem {}
-                model: ContactsModel {}
+                model: contactModel
+
+                delegate: Component {
+                    id: contactDelegate
+
+                    Rectangle {
+                        id: contactId
+                        width: appWindow.width
+                        height: appWindow.height / 10
+                        color: "#2C2C2C"
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+
+                                //                                listView.currentIndex = index
+
+                                //                                console.log(contactModel.get(index).idText)
+                                //                                var component = Qt.createComponent(
+                                //                                            "ContactDialog.qml")
+                                //                                var loadIt = component.createObject(appWindow)
+                                //                                loadIt.recievedId = contactModel.get(
+                                //                                            index).idText
+                                //                                loadIt.open()/*
+                                dialogLoader.active = false
+                                dialogLoader.active = true
+                                dialogLoader.item.open()
+                            }
+                        }
+
+                        Item {
+                            id: iconContainer
+                            width: 50
+                            height: 50
+
+                            Image {
+                                id: contactIcon
+                                //placeholder icon, replace with something..
+                                source: "https://cdn.onlinewebfonts.com/svg/img_411575.png"
+                                width: 30
+                                height: 30
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
+                            }
+                        }
+
+                        Item {
+                            id: infoContainer
+                            anchors {
+                                right: iconContainer.right
+                            }
+
+                            Text {
+                                visible: false
+                                id: idOfContact
+                                text: idText
+                                color: "#fff"
+                            }
+
+                            Text {
+                                id: firstName
+                                color: "#fff"
+                                text: contactName
+                                x: 10
+                            }
+
+                            Text {
+                                id: phoneNumber
+                                color: "#e0e0e0"
+                                text: contactNumber ? contactNumber : "No number entered.."
+                                x: 10
+                                anchors {
+                                    top: firstName.bottom
+                                }
+                            }
+                        }
+                    }
+                }
+
                 spacing: 5
 
                 headerPositioning: ListView.OverlayHeader
@@ -99,48 +198,17 @@ ApplicationWindow {
         }
     }
 
-    //    StackLayout {
-    //        currentIndex: navigator.currentIndex
-    //        anchors.fill: parent
-    //        Item {
-    //            id: contactsView
-    //            ListView {
-    //                id: listView
-    //                anchors.fill: parent
-    //                delegate: ContactItem {}
-    //                model: ContactsModel {}
-    //                spacing: 5
-
-    //                headerPositioning: ListView.OverlayHeader
-    //                header: Rectangle {
-    //                    id: header
-    //                    color: "#2C2C2C"
-    //                    border.color: "#fff"
-    //                    width: parent.width
-    //                    height: 50
-    //                    z: 2
-    //                    //                    TextInput {
-    //                    //                        color: "#fff"
-    //                    //                        width: parent.width
-    //                    //                        height: parent.height
-    //                    //                        text: "Search.."
-
-    //                    //                        anchors {
-    //                    //                            verticalCenter: verticalCenter
-    //                    //                        }
-    //                    //                    }
-    //                }
-    //            }
-    //        }
-
-    //        MyContacts {}
-
-    //        Item {
-    //            id: misc
-    //            Text {
-    //                id: hioh
-    //                text: qsTr("Blyat vadim!")
-    //            }
-    //        }
-    //    }
+    RoundButton {
+        text: qsTr("+")
+        highlighted: true
+        anchors.margins: 10
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        onClicked: {
+            createContactLoader.active = false
+            createContactLoader.active = true
+            createContactLoader.item.open()
+            console.log("TODO")
+        }
+    }
 }

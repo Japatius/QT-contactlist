@@ -2,6 +2,10 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 
 Component {
+
+    //    property string idText
+    //    property string contactName
+    //    property string contactNumber
     id: contactDelegate
     Rectangle {
         id: contactId
@@ -10,12 +14,16 @@ Component {
         color: "#2C2C2C"
 
         MouseArea {
-
             anchors.fill: parent
             onClicked: {
                 dialogLoader.active = false
                 dialogLoader.active = true
                 dialogLoader.item.open()
+                console.log(contactModel.get(index).id)
+                //                var component = Qt.createComponent("ContactDialog.qml")
+                //                var loadIt = component.createObject(appWindow)
+                //                loadIt.recievedId = idOfContact.text
+                //                loadIt.open()
             }
         }
 
@@ -44,7 +52,7 @@ Component {
             Text {
                 visible: false
                 id: idOfContact
-                text: id
+                text: idText
                 color: "#fff"
             }
 

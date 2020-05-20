@@ -19,7 +19,7 @@ function fetchContacts(viewId) {
                                     "contactName": objectArray[i].firstname
                                     + " " + objectArray[i].lastname,
                                     "contactNumber": objectArray[i].mobile,
-                                    "id": objectArray[i].id
+                                    "idText": objectArray[i].id
                                 })
             console.log(objectArray[i].firstname)
         }
@@ -75,13 +75,13 @@ function createContact(firstname) {
 /**
   * Update a contact
   **/
-function updateContact() {
+function updateContact(firstName, lastName, mobile, email) {
     // TODO: Make it take an id from item
     var data = {}
-    data.firstname = "Koksal"
-    data.lastname = "Baba"
-    data.mobile = "+90-12323"
-    data.email = "koksal.baba@turkey.tr"
+    data.firstname = firstName
+    data.lastname = lastName
+    data.mobile = mobile
+    data.email = email
     var json = JSON.stringify(data)
 
     var xhr = new XMLHttpRequest()
