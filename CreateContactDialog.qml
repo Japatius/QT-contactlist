@@ -15,6 +15,8 @@ GridLayout {
     property string email
     property string placeholderText: "Enter"
     property int inputWidth: 100
+    property alias closeButton: closeButton
+    property string testString
 
     Label {
         text: qsTr("Firstname")
@@ -23,6 +25,7 @@ GridLayout {
 
     TextField {
         id: firstnameInput
+        text: testString
         Layout.fillWidth: inputWidth
         Layout.minimumWidth: grid.minimumInputSize
         placeholderText: placeholderText
@@ -104,5 +107,10 @@ GridLayout {
             }
             req.send(json)
         }
+    }
+
+    Button {
+        id: closeButton
+        text: qsTr("Close")
     }
 }

@@ -75,7 +75,7 @@ function createContact(firstname) {
 /**
   * Update a contact
   **/
-function updateContact(firstName, lastName, mobile, email) {
+function updateContact(id, firstName, lastName, mobile, email) {
     // TODO: Make it take an id from item
     var data = {}
     data.firstname = firstName
@@ -85,7 +85,7 @@ function updateContact(firstName, lastName, mobile, email) {
     var json = JSON.stringify(data)
 
     var xhr = new XMLHttpRequest()
-    xhr.open("PUT", URL + '/48', true)
+    xhr.open("PUT", "https://qtphone.herokuapp.com/contact/" + id, true)
     xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
     xhr.onload = function () {
         var users = JSON.parse(xhr.responseText)
@@ -103,3 +103,29 @@ function updateContact(firstName, lastName, mobile, email) {
   * Delete a contact
   **/
 function deleteContact() {}
+
+
+/**
+  * Contact dialog opening thingy
+  **/
+var component
+var dialog
+
+function createDialog(id) {
+    var req = new XMLHttpRequest()
+    // TODO: Pass ID when opening dialog
+    req.open("GET", "https://qtphone.herokuapp.com/contact/" + id, true)
+    req.onload = function () {
+        var objectArray = JSON.parse(req.responseText)
+        for (var i = 0; i < objectArray.length; i++) {
+            console.log(req.responseText)
+            //            fName = objectArray[i].firstname
+            //            lName = objectArray[i].lastname
+            //            email = objectArray[i].email
+            //            mobile = objectArray[i].mobile
+            //            console.log(fName, lName, email, mobile)
+            //            console.log(recievedId)
+        }
+    }
+    req.send()
+}

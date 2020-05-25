@@ -3,10 +3,11 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import "ApiHelper.js" as Api
 
-Item {
+ApplicationWindow {
     id: contactDialog
     width: appWindow.width
-    height: 600
+    height: appWindow.height
+    visible: true
     property string recievedId
     property alias okButton: okButton
     property alias cancelButton: cancelButton
@@ -15,6 +16,7 @@ Item {
     property string lNameText: "Lastname"
     property string emailText: "Email"
     property string mobileText: "Mobile"
+    property string updateText: "Update"
 
     property string fName
     property string lName
@@ -36,7 +38,8 @@ Item {
     Component.onCompleted: {
         var req = new XMLHttpRequest()
         // TODO: Pass ID when opening dialog
-        req.open("GET", "https://qtphone.herokuapp.com/contact/16", true)
+        req.open("GET",
+                 "https://qtphone.herokuapp.com/contact/" + recievedId, true)
         req.onload = function () {
             var objectArray = JSON.parse(req.responseText)
             for (var i = 0; i < objectArray.length; i++) {
@@ -58,8 +61,9 @@ Item {
     Rectangle {
         id: backgroundRectangle
         height: parent.height
-        width: appWindow.width
+        width: parent.width
         color: "#757575"
+
         Column {
             width: appWindow.width
             spacing: 10
@@ -173,9 +177,9 @@ Item {
                 height: 60
                 color: blackColor
                 Button {
-                    text: "Test"
+                    text: updateText
                     onClicked: {
-                        Api.updateContact(firstNameInput.text,
+                        Api.updateContact(recievedId, firstNameInput.text,
                                           lastNameInput.text, mobileInput.text,
                                           emailInput.text)
                     }
@@ -267,6 +271,9 @@ Item {
             Button {
                 id: cancelButton
                 text: "NOPE"
+                onClicked: {
+                    contactDialog.destroy()
+                }
             }
         }
     }

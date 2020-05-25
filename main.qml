@@ -17,43 +17,45 @@ ApplicationWindow {
         Api.fetchContactById("20")
     }
 
-    Loader {
-        id: dialogLoader
-        sourceComponent: diaComp
-        active: false
-    }
-
+    //    Loader {
+    //        id: dialogLoader
+    //        sourceComponent: diaComp
+    //        active: false
+    //    }
     Loader {
         id: createContactLoader
         sourceComponent: createComp
         active: false
     }
 
-    Component {
-        id: diaComp
-        Dialog {
-            id: contactDialogId
-            contentItem: ContactDialog {
-                id: contactContentItemId
-                cancelButton.onClicked: {
-                    contactDialogId.close()
-                }
-            }
-            standardButtons: StandardButton.Ok
-        }
-    }
-
+    //    Component {
+    //        id: diaComp
+    //        Dialog {
+    //            id: contactDialogId
+    //            contentItem: ContactDialog {
+    //                id: contactContentItemId
+    //                recievedId: idOfContact
+    //                cancelButton.onClicked: {
+    //                    contactDialogId.close()
+    //                }
+    //            }
+    //            standardButtons: StandardButton.Ok
+    //        }
+    //    }
     Component {
         id: createComp
         Dialog {
             id: createContactDialogId
             contentItem: CreateContactDialog {
                 id: createContactContentId
+                testString: "Moro nääs :D"
+                closeButton.onClicked: {
+                    createContactDialogId.close()
+                }
             }
             standardButtons: StandardButton.Ok
         }
     }
-
     footer: TabBar {
         id: navigator
         width: parent.width
@@ -96,21 +98,25 @@ ApplicationWindow {
                         color: "#2C2C2C"
 
                         MouseArea {
+                            id: clickArea
                             anchors.fill: parent
+
+                            signal passId(variant item)
                             onClicked: {
 
-                                //                                listView.currentIndex = index
+                                listView.currentIndex = index
 
-                                //                                console.log(contactModel.get(index).idText)
-                                //                                var component = Qt.createComponent(
-                                //                                            "ContactDialog.qml")
-                                //                                var loadIt = component.createObject(appWindow)
-                                //                                loadIt.recievedId = contactModel.get(
-                                //                                            index).idText
-                                //                                loadIt.open()/*
-                                dialogLoader.active = false
-                                dialogLoader.active = true
-                                dialogLoader.item.open()
+                                console.log(contactModel.get(index).idText)
+                                var component = Qt.createComponent(
+                                            "ContactDialog.qml")
+                                var loadIt = component.createObject(appWindow, {
+                                                                        "recievedId": idOfContact.text
+                                                                    })
+                                passId(loadIt)
+                                loadIt.open()
+                            }
+                            onPassId: {
+                                console.log(item.recievedId + " was opened")
                             }
                         }
 
