@@ -27,6 +27,13 @@ function fetchContacts(viewId) {
     req.send()
 }
 
+function refreshModel(viewId) {
+    viewId.model.clear()
+    fetchContacts(viewId)
+}
+
+function filterContacts() {}
+
 
 /**
   * Get contact by ID

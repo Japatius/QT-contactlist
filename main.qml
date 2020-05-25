@@ -48,7 +48,6 @@ ApplicationWindow {
             id: createContactDialogId
             contentItem: CreateContactDialog {
                 id: createContactContentId
-                testString: "Moro nääs :D"
                 closeButton.onClicked: {
                     createContactDialogId.close()
                 }
@@ -86,7 +85,39 @@ ApplicationWindow {
             ListView {
                 id: listView
                 anchors.fill: parent
+                spacing: 5
                 model: contactModel
+
+                headerPositioning: ListView.OverlayHeader
+                header: Rectangle {
+                    id: header
+                    color: "#2C2C2C"
+                    border.color: "#fff"
+                    width: parent.width
+                    height: 50
+                    z: 2
+                    Button {
+                        id: doSearchBtn
+                        text: "Reload"
+                        anchors.right: searchField.left
+                        onClicked: {
+                            Api.refreshModel(listView)
+                        }
+                    }
+
+                    TextField {
+                        id: searchField
+                        color: "#fff"
+                        width: 200
+                        height: parent.height
+                        text: "Search.."
+                        anchors.left: doSearchBtn.right
+
+                        onTextChanged: {
+                            console.log(searchField.text)
+                        }
+                    }
+                }
 
                 delegate: Component {
                     id: contactDelegate
@@ -167,28 +198,6 @@ ApplicationWindow {
                             }
                         }
                     }
-                }
-
-                spacing: 5
-
-                headerPositioning: ListView.OverlayHeader
-                header: Rectangle {
-                    id: header
-                    color: "#2C2C2C"
-                    border.color: "#fff"
-                    width: parent.width
-                    height: 50
-                    z: 2
-                    //                    TextInput {
-                    //                        color: "#fff"
-                    //                        width: parent.width
-                    //                        height: parent.height
-                    //                        text: "Search.."
-
-                    //                        anchors {
-                    //                            verticalCenter: verticalCenter
-                    //                        }
-                    //                    }
                 }
             }
         }

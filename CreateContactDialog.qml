@@ -25,7 +25,6 @@ GridLayout {
 
     TextField {
         id: firstnameInput
-        text: testString
         Layout.fillWidth: inputWidth
         Layout.minimumWidth: grid.minimumInputSize
         placeholderText: placeholderText

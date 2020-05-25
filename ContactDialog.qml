@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtQuick.Controls.Material 2.12
 import "ApiHelper.js" as Api
 
 ApplicationWindow {
@@ -8,6 +9,7 @@ ApplicationWindow {
     width: appWindow.width
     height: appWindow.height
     visible: true
+
     property string recievedId
     property alias okButton: okButton
     property alias cancelButton: cancelButton
@@ -25,6 +27,7 @@ ApplicationWindow {
 
     property string whiteColor: "#fff"
     property string blackColor: "#000000"
+    property string darkColor: "#242424"
 
     // toggling edit state for inputs
     property bool fnameEdit: false
@@ -62,12 +65,13 @@ ApplicationWindow {
         id: backgroundRectangle
         height: parent.height
         width: parent.width
-        color: "#757575"
+
+        color: "#282828"
 
         Column {
+            anchors.fill: parent
             width: appWindow.width
             spacing: 10
-            anchors.fill: parent
             Rectangle {
                 width: 100
                 height: 100
@@ -89,8 +93,9 @@ ApplicationWindow {
             Rectangle {
                 width: parent.width
                 height: 60
-                color: blackColor
+                color: darkColor
                 Text {
+                    anchors.verticalCenter: parent.verticalCenter
                     id: fNameTextId
                     color: whiteColor
                     text: fNameText
@@ -98,7 +103,10 @@ ApplicationWindow {
 
                 TextField {
                     anchors {
+                        baseline: fNameTextId.baseline
+                        horizontalCenter: parent.horizontalCenter
                         left: fNameTextId.right
+                        leftMargin: 15
                     }
 
                     id: firstNameInput
@@ -111,8 +119,9 @@ ApplicationWindow {
             Rectangle {
                 width: parent.width
                 height: 60
-                color: blackColor
+                color: darkColor
                 Text {
+                    anchors.verticalCenter: parent.verticalCenter
                     id: lNameTextId
                     color: whiteColor
                     text: lNameText
@@ -120,7 +129,10 @@ ApplicationWindow {
 
                 TextField {
                     anchors {
+                        baseline: lNameTextId.baseline
+                        horizontalCenter: parent.horizontalCenter
                         left: lNameTextId.right
+                        leftMargin: 15
                     }
                     id: lastNameInput
                     readOnly: lnameEdit
@@ -132,8 +144,9 @@ ApplicationWindow {
             Rectangle {
                 width: parent.width
                 height: 60
-                color: blackColor
+                color: darkColor
                 Text {
+                    anchors.verticalCenter: parent.verticalCenter
                     id: mobileTextId
                     color: whiteColor
                     text: mobileText
@@ -141,7 +154,10 @@ ApplicationWindow {
 
                 TextField {
                     anchors {
+                        baseline: mobileTextId.baseline
+                        horizontalCenter: parent.horizontalCenter
                         left: mobileTextId.right
+                        leftMargin: 15
                     }
                     id: mobileInput
                     readOnly: lnameEdit
@@ -153,8 +169,9 @@ ApplicationWindow {
             Rectangle {
                 width: parent.width
                 height: 60
-                color: blackColor
+                color: darkColor
                 Text {
+                    anchors.verticalCenter: parent.verticalCenter
                     id: emailTextId
                     color: whiteColor
                     text: emailText
@@ -162,8 +179,10 @@ ApplicationWindow {
 
                 TextField {
                     anchors {
+                        baseline: emailTextId.baseline
+                        horizontalCenter: parent.horizontalCenter
                         left: emailTextId.right
-                        leftMargin: 10
+                        leftMargin: 15
                     }
                     id: emailInput
                     readOnly: lnameEdit
@@ -175,8 +194,9 @@ ApplicationWindow {
             Rectangle {
                 width: parent.width
                 height: 60
-                color: blackColor
+                color: "#282828"
                 Button {
+                    anchors.horizontalCenter: parent.horizontalCenter
                     text: updateText
                     onClicked: {
                         Api.updateContact(recievedId, firstNameInput.text,
@@ -187,90 +207,19 @@ ApplicationWindow {
             }
         }
 
-        //    Rectangle {
-        //        width: parent.width
-        //        height: parent.height
-
-        //        Text {
-        //            anchors {
-        //                horizontalCenter: parent.horizontalCenter
-        //            }
-        //            id: contactDialogName
-        //            text: title
-        //            font.pointSize: titleSize
-        //        }
-
-        //        Text {
-        //            id: firstName
-        //            text: fNameText
-        //            anchors.baseline: firstNameInput.baseline
-        //        }
-
-        //        TextField {
-        //            anchors.top: contactDialogName.bottom
-        //            anchors {
-        //                top: contactDialogName.bottom
-        //                horizontalCenter: parent.horizontalCenter
-        //            }
-        //            id: firstNameInput
-        //            readOnly: fnameEdit
-        //            placeholderTextColor: "black"
-        //            placeholderText: qsTr("Enter firstname..")
-        //        }
-
-        //        Text {
-        //            id: lastName
-        //            text: lNameText
-        //            anchors.baseline: lastNameInput.baseline
-        //        }
-
-        //        TextField {
-        //            anchors {
-        //                top: firstNameInput.bottom
-        //                horizontalCenter: parent.horizontalCenter
-        //            }
-        //            id: lastNameInput
-        //            readOnly: lnameEdit
-        //            placeholderTextColor: "black"
-        //            placeholderText: qsTr("Enter lastname..")
-        //        }
-
-        //        Button {
-        //            // TODO: make into icon button
-        //            id: toggleFnameButton
-        //            text: "tglFname"
-        //            anchors.left: firstNameInput.right
-        //        }
-
-        //        Button {
-        //            // TODO: make into icon button
-        //            id: toggleLnameButton
-        //            text: "tgLname"
-        //            anchors.left: lastNameInput.right
-        //        }
-
-        //        Button {
-        //            id: updateBtn
-        //            text: "Update"
-        //            onClicked: {
-        //                console.log("Do updating..")
-        //            }
-        //            anchors {
-        //                horizontalCenter: parent.horizontalCenter
-        //                top: lastNameInput.bottom
-        //            }
-        //        }
-        //    }
         Row {
-            anchors.bottom: backgroundRectangle.bottom
+            anchors {
+                bottom: backgroundRectangle.bottom
+                horizontalCenter: horizontalCenter
+            }
+
             Button {
                 id: okButton
                 text: "OK"
             }
-
             Button {
                 id: cancelButton
-                text: "NOPE"
+                text: "Close"
                 onClicked: {
                     contactDialog.destroy()
                 }
