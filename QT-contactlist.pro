@@ -23,7 +23,6 @@ QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
-    include(C:\Users\Jaakon\AppData\Local\Android\Sdk\android_openssl\openssl.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -40,4 +39,5 @@ DISTFILES += \
     android/res/values/libs.xml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+android: include(C:\Users\Jaakon\AppData\Local\Android\Sdk\android_openssl\openssl.pri)
 android: include(C:/Users/Jaakon/AppData/Local/Android/Sdk/android_openssl/openssl.pri)

@@ -1,5 +1,5 @@
-import QtQuick 2.13
-import QtQuick.Controls 2.13
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
 import "ApiHelper.js" as Api
@@ -10,6 +10,9 @@ ApplicationWindow {
     width: 640
     height: 480
     title: qsTr("Scroll")
+
+    property string darkColor: "#242424"
+    property string whiteColor: "#fff"
 
     Component.onCompleted: {
         Api.func()
@@ -65,9 +68,6 @@ ApplicationWindow {
         TabButton {
             text: qsTr("My Contacts")
         }
-        TabButton {
-            text: qsTr("Misc")
-        }
     }
 
     ListModel {
@@ -87,7 +87,6 @@ ApplicationWindow {
                 anchors.fill: parent
                 spacing: 5
                 model: contactModel
-
                 headerPositioning: ListView.OverlayHeader
                 header: Rectangle {
                     id: header
@@ -114,6 +113,9 @@ ApplicationWindow {
                         anchors.left: doSearchBtn.right
 
                         onTextChanged: {
+
+                            if (text.length > 0)
+                                contactModel.get(text)
                             console.log(searchField.text)
                         }
                     }
@@ -132,6 +134,7 @@ ApplicationWindow {
                             id: clickArea
                             anchors.fill: parent
 
+                            // send id into dialog
                             signal passId(variant item)
                             onClicked: {
 
@@ -151,17 +154,16 @@ ApplicationWindow {
                             }
                         }
 
-                        Item {
+                        Rectangle {
                             id: iconContainer
                             width: 50
                             height: 50
+                            radius: width * 0.5
+                            color: darkColor
 
-                            Image {
-                                id: contactIcon
-                                //placeholder icon, replace with something..
-                                source: "https://cdn.onlinewebfonts.com/svg/img_411575.png"
-                                width: 30
-                                height: 30
+                            Text {
+                                text: contactName.charAt(0)
+                                color: whiteColor
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.horizontalCenter
                             }
@@ -169,9 +171,7 @@ ApplicationWindow {
 
                         Item {
                             id: infoContainer
-                            anchors {
-                                right: iconContainer.right
-                            }
+                            anchors.right: iconContainer.right
 
                             Text {
                                 visible: false
@@ -203,14 +203,6 @@ ApplicationWindow {
         }
 
         MyContacts {}
-
-        Item {
-            id: misc
-            Text {
-                id: hioh
-                text: qsTr("Blyat vadim!")
-            }
-        }
     }
 
     RoundButton {
@@ -223,7 +215,6 @@ ApplicationWindow {
             createContactLoader.active = false
             createContactLoader.active = true
             createContactLoader.item.open()
-            console.log("TODO")
         }
     }
 }

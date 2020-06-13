@@ -110,29 +110,3 @@ function updateContact(id, firstName, lastName, mobile, email) {
   * Delete a contact
   **/
 function deleteContact() {}
-
-
-/**
-  * Contact dialog opening thingy
-  **/
-var component
-var dialog
-
-function createDialog(id) {
-    var req = new XMLHttpRequest()
-    // TODO: Pass ID when opening dialog
-    req.open("GET", "https://qtphone.herokuapp.com/contact/" + id, true)
-    req.onload = function () {
-        var objectArray = JSON.parse(req.responseText)
-        for (var i = 0; i < objectArray.length; i++) {
-            console.log(req.responseText)
-            //            fName = objectArray[i].firstname
-            //            lName = objectArray[i].lastname
-            //            email = objectArray[i].email
-            //            mobile = objectArray[i].mobile
-            //            console.log(fName, lName, email, mobile)
-            //            console.log(recievedId)
-        }
-    }
-    req.send()
-}

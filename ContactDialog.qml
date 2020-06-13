@@ -57,15 +57,10 @@ ApplicationWindow {
         req.send()
     }
 
-    Component.onDestruction: {
-        Api.fetchContacts()
-    }
-
     Rectangle {
         id: backgroundRectangle
         height: parent.height
         width: parent.width
-
         color: "#282828"
 
         Column {
@@ -222,6 +217,7 @@ ApplicationWindow {
                 text: "Close"
                 onClicked: {
                     contactDialog.destroy()
+                    Api.refreshModel(listView)
                 }
             }
         }
