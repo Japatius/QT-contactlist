@@ -1,9 +1,5 @@
 let URL = "https://qtphone.herokuapp.com/contact"
 
-function func() {
-    return console.log("Moro")
-}
-
 
 /**
   * Get contacts & append data for contacts list
@@ -21,7 +17,6 @@ function fetchContacts(viewId) {
                                     "contactNumber": objectArray[i].mobile,
                                     "idText": objectArray[i].id
                                 })
-            console.log(objectArray[i].firstname)
         }
     }
     req.send()

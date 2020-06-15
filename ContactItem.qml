@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import "ApiHelper.js" as Api
 
 Component {
 
@@ -14,30 +15,38 @@ Component {
         color: "#2C2C2C"
 
         MouseArea {
+            id: clickArea
             anchors.fill: parent
+
+            // send id into dialog
+            signal passId(variant item)
             onClicked: {
-                dialogLoader.active = false
-                dialogLoader.active = true
-                dialogLoader.item.open()
-                console.log(contactModel.get(index).id)
-                //                var component = Qt.createComponent("ContactDialog.qml")
-                //                var loadIt = component.createObject(appWindow)
-                //                loadIt.recievedId = idOfContact.text
-                //                loadIt.open()
+
+                listView.currentIndex = index
+
+                console.log(contactModel.get(index).idText)
+                var component = Qt.createComponent("ContactDialog.qml")
+                var loadIt = component.createObject(appWindow, {
+                                                        "recievedId": idOfContact.text
+                                                    })
+                passId(loadIt)
+                loadIt.open()
+            }
+            onPassId: {
+                console.log(item.recievedId + " was opened")
             }
         }
 
-        Item {
+        Rectangle {
             id: iconContainer
             width: 50
             height: 50
+            radius: width * 0.5
+            color: darkColor
 
-            Image {
-                id: contactIcon
-                //placeholder icon, replace with something..
-                source: "https://cdn.onlinewebfonts.com/svg/img_411575.png"
-                width: 30
-                height: 30
+            Text {
+                text: contactName.charAt(0)
+                color: whiteColor
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
             }
@@ -45,9 +54,7 @@ Component {
 
         Item {
             id: infoContainer
-            anchors {
-                right: iconContainer.right
-            }
+            anchors.right: iconContainer.right
 
             Text {
                 visible: false
