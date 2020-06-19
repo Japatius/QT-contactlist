@@ -9,5 +9,7 @@
         <file>CreateContactDialog.qml</file>
         <file>SavedContact.qml</file>
         <file>ContactsView.qml</file>
+        <file>Icons.js</file>
+        <file>../materialdesignicons-webfont.ttf</file>
     </qresource>
 </RCC>

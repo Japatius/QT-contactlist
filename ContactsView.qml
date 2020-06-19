@@ -2,7 +2,9 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
+import QtQuick.Dialogs 1.2
 import "ApiHelper.js" as Api
+import "Icons.js" as Mdi
 
 Item {
     id: contactsView
@@ -16,27 +18,38 @@ Item {
         id: contactModel
     }
 
+    MessageDialog {
+        id: snackbar
+        title: "Testaus?"
+        text: "testi teksti"
+        onAccepted: {
+            console.log("closed")
+        }
+    }
+
     ListView {
         id: listView
         anchors.fill: parent
         spacing: 5
-        model: contactModel
         headerPositioning: ListView.OverlayHeader
         width: parent.width
         height: parent.height
+        model: contactModel
+
         header: Rectangle {
             id: header
             color: "#2C2C2C"
-            border.color: "#fff"
+            //            border.color: "#fff"
             width: parent.width
             height: 50
             z: 2
             Button {
                 id: doSearchBtn
-                text: "Reload"
+                text: "refresh"
                 anchors.right: searchField.left
                 onClicked: {
-                    Api.refreshModel(listView)
+
+                    //                    Api.refreshModel(listView)
                 }
             }
 
@@ -47,12 +60,10 @@ Item {
                 height: parent.height
                 text: "Search.."
                 anchors.left: doSearchBtn.right
-
                 onTextChanged: {
-
-                    if (text.length > 0)
-                        contactModel.get(text)
-                    console.log(searchField.text)
+                    for (var i = 0; i < contactModel.count; i++) {
+                        console.log(i)
+                    }
                 }
             }
         }
@@ -65,7 +76,6 @@ Item {
                 width: contactsView.width
                 height: contactsView.height / 10
                 color: "#2C2C2C"
-
                 MouseArea {
                     id: clickArea
                     anchors.fill: parent
@@ -95,7 +105,7 @@ Item {
                     height: 50
                     radius: width * 0.5
                     color: darkColor
-
+                    anchors.verticalCenter: parent.verticalCenter
                     Text {
                         text: contactName.charAt(0)
                         color: whiteColor
@@ -104,9 +114,13 @@ Item {
                     }
                 }
 
-                Item {
+                Rectangle {
                     id: infoContainer
-                    anchors.right: iconContainer.right
+                    //                    anchors.right: iconContainer.right
+                    anchors {
+                        right: iconContainer.right
+                        baseline: iconContainer.baseline
+                    }
 
                     Text {
                         visible: false

@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    QFontDatabase::addApplicationFont("qrc:/materialdesignicons-webfont.ttf");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

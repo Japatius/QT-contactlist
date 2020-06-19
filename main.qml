@@ -37,13 +37,13 @@ ApplicationWindow {
         id: drawer
         width: appWindow.width * 0.66
         height: appWindow.height
-        Label {
-            text: "Contact List"
-        }
 
         Column {
             anchors.fill: parent
-
+            Label {
+                padding: 10
+                text: "Contact List"
+            }
             ItemDelegate {
                 text: qsTr("Page 1")
                 width: parent.width
@@ -85,20 +85,11 @@ ApplicationWindow {
         id: contactModel
     }
 
-    Rectangle {
-        id: kokbars
-        width: 50
-        height: 50
-        Text {
-            anchors.centerIn: parent
-            text: qsTr("Loading")
-        }
-    }
-
     Item {
         id: contactPos
         Loader {
             id: viewLoader
+            anchors.fill: parent
             source: "ContactsView.qml"
             asynchronous: true
             visible: status == Loader.Ready
