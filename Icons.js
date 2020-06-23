@@ -1,4 +1,4 @@
-var Icon = {
+var icon = {
     "accessPoint": "\uf002",
     "accessPointNetwork": "\uf003",
     "account": "\uf004",

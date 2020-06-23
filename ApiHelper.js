@@ -1,4 +1,6 @@
 let URL = "https://qtphone.herokuapp.com/contact"
+let colors = ["#3390ff", "#ff3333", "#4cff33", "#ff8d33"]
+let randomColor = Math.floor(Math.random() * colors.length)
 
 
 /**

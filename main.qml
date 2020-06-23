@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.12
 import "ApiHelper.js" as Api
+import "Icons.js" as Mdi
 
 ApplicationWindow {
     id: appWindow
@@ -17,11 +18,17 @@ ApplicationWindow {
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
 
+    FontLoader {
+        id: fontLoader
+        source: "../fonts/materialdesignicons-webfont.ttf"
+    }
+
     header: ToolBar {
         contentHeight: toolBtn.implicitHeight
         ToolButton {
             id: toolBtn
-            text: "\uf031"
+            font.family: fontLoader.name
+            text: Mdi.icon.accessPoint
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
                 drawer.open()
@@ -45,26 +52,22 @@ ApplicationWindow {
                 text: "Contact List"
             }
             ItemDelegate {
-                text: qsTr("Page 1")
+                text: qsTr("Contacts")
                 width: parent.width
                 onClicked: {
+                    stack.push("main.qml")
                     drawer.close()
                 }
             }
             ItemDelegate {
-                text: qsTr("Page 2")
+                text: qsTr("My contacts")
                 width: parent.width
                 onClicked: {
+                    stack.push("MyContacts.qml")
                     drawer.close()
                 }
             }
         }
-    }
-
-    Loader {
-        id: createContactLoader
-        sourceComponent: createComp
-        active: false
     }
 
     Component {
@@ -105,18 +108,23 @@ ApplicationWindow {
         id: stack
         initialItem: contactPos
         anchors.fill: parent
-    }
 
-    RoundButton {
-        text: qsTr("+")
-        highlighted: true
-        anchors.margins: 10
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        onClicked: {
-            createContactLoader.active = false
-            createContactLoader.active = true
-            createContactLoader.item.open()
+        pushEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: 200
+            }
+        }
+
+        pushExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: 200
+            }
         }
     }
 }

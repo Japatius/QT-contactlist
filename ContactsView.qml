@@ -10,6 +10,7 @@ Item {
     id: contactsView
     width: Screen.width
     height: Screen.height
+
     Component.onCompleted: {
         Api.fetchContacts(listView)
     }
@@ -25,6 +26,12 @@ Item {
         onAccepted: {
             console.log("closed")
         }
+    }
+
+    Loader {
+        id: createContactLoader
+        sourceComponent: createComp
+        active: false
     }
 
     ListView {
@@ -45,7 +52,6 @@ Item {
             z: 2
             Button {
                 id: doSearchBtn
-                text: "refresh"
                 anchors.right: searchField.left
                 onClicked: {
 
@@ -76,6 +82,7 @@ Item {
                 width: contactsView.width
                 height: contactsView.height / 10
                 color: "#2C2C2C"
+
                 MouseArea {
                     id: clickArea
                     anchors.fill: parent
@@ -147,6 +154,18 @@ Item {
                     }
                 }
             }
+        }
+    }
+    RoundButton {
+        text: qsTr("+")
+        highlighted: true
+        anchors.margins: 10
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        onClicked: {
+            createContactLoader.active = false
+            createContactLoader.active = true
+            createContactLoader.item.open()
         }
     }
 }

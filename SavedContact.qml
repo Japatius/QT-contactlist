@@ -1,60 +1,62 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
+import QtQuick.Window 2.12
+import QtQuick.LocalStorage 2.12
 
 Item {
+    width: Screen.width
+    height: Screen.height
 
-    ListModel {
-        id: listModelo
-        ListElement {
-            name: "Kontakti1"
-            number: "123"
-            email: "1@1.fi"
-        }
-        ListElement {
-            name: "Kontakti2"
-            number: "1234"
-            email: "2@2.fi"
-        }
-        ListElement {
-            name: "Kontakti3"
-            number: "12345"
-            email: "3@3.fi"
-        }
-    }
+    ListView {
+        id: savedContactList
+        anchors.fill: parent
+        model: ListModel {}
+        spacing: 10
+        delegate: Rectangle {
+            width: parent.width
+            height: 50
+            border.color: "#fff"
 
-    Rectangle {
-        width: 180
-        height: 200
+            Text {
+                id: name
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    horizontalCenter: parent.horizontalCenter
+                }
 
-        Component {
-            id: contactDelegate
-            Item {
-                width: 180
-                height: 40
-                Column {
-                    Text {
-                        text: '<b>Name:</b> ' + name
-                    }
-                    Text {
-                        text: '<b>Number:</b> ' + number
-                    }
-                    Text {
-                        text: '<b>Email:</b> ' + email
-                    }
+                font.pointSize: 16
+                color: "#000000"
+                text: "incoming"
+
+                function findContacts() {
+                    var db = LocalStorage.openDatabaseSync(
+                                "ContactsDatabase", "1.0",
+                                "Database for contacts", 1000000)
+
+                    db.transaction(function (tx) {
+                        // create DB
+                        tx.executeSql(
+                                    'CREATE TABLE IF NOT EXISTS Contacts(firstname TEXT, phone TEXT)')
+
+                        tx.executeSql('INSERT INTO Contacts VALUES (?, ?)',
+                                      ['Matti Mallikas', '358012331'])
+
+                        var getGot = tx.executeSql('SELECT * FROM Contacts')
+
+                        var res = ""
+                        for (var i = 0; i < getGot.rows.length; i++) {
+
+                            res += getGot.rows.item(
+                                        i).firstname + ": " + getGot.rows.item(
+                                        i).phone + "\n"
+                        }
+                        text = res
+                    })
+                }
+                Component.onCompleted: {
+                    findContacts()
                 }
             }
-        }
-
-        ListView {
-            anchors.fill: parent
-            model: listModelo
-            delegate: contactDelegate
-            spacing: 10
-            highlight: Rectangle {
-                color: "lightsteelblue"
-                radius: 5
-            }
-            focus: true
         }
     }
 }
