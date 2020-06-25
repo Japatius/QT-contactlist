@@ -46,13 +46,15 @@ Item {
         header: Rectangle {
             id: header
             color: "#2C2C2C"
-            //            border.color: "#fff"
             width: parent.width
             height: 50
             z: 2
             Button {
                 id: doSearchBtn
                 anchors.right: searchField.left
+                font.family: "Ionicons"
+                text: Mdi.icon.mdRefresh
+                padding: 15
                 onClicked: {
 
                     //                    Api.refreshModel(listView)
@@ -67,9 +69,12 @@ Item {
                 text: "Search.."
                 anchors.left: doSearchBtn.right
                 onTextChanged: {
-                    for (var i = 0; i < contactModel.count; i++) {
-                        console.log(i)
-                    }
+
+
+                    /*
+                    * TODO: FILTERING
+                    */
+                    console.log(searchField.text)
                 }
             }
         }
@@ -151,6 +156,14 @@ Item {
                         anchors {
                             top: firstName.bottom
                         }
+                    }
+                }
+                Rectangle {
+                    anchors.right: contactId.right
+                    IonIcon {
+                        iconName: Mdi.icon.iosPersonAdd
+                        iconColor: "#fff"
+                        pointSize: 25
                     }
                 }
             }

@@ -18,18 +18,20 @@ ApplicationWindow {
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
 
-    FontLoader {
-        id: fontLoader
-        source: "../fonts/materialdesignicons-webfont.ttf"
-    }
-
     header: ToolBar {
         contentHeight: toolBtn.implicitHeight
         ToolButton {
             id: toolBtn
-            font.family: fontLoader.name
-            text: Mdi.icon.accessPoint
             font.pixelSize: Qt.application.font.pixelSize * 1.6
+
+            IonIcon {
+                anchors.verticalCenter: parent.verticalCenter
+
+                iconName: Mdi.icon.mdMenu
+                iconColor: "#fff"
+                pointSize: 25
+            }
+
             onClicked: {
                 drawer.open()
             }

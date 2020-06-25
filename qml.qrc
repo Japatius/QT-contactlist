@@ -10,6 +10,7 @@
         <file>SavedContact.qml</file>
         <file>ContactsView.qml</file>
         <file>Icons.js</file>
-        <file>materialdesignicons-webfont.ttf</file>
+        <file>ionicons.ttf</file>
+        <file>IonIcon.qml</file>
     </qresource>
 </RCC>
