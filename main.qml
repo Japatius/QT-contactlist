@@ -18,26 +18,31 @@ ApplicationWindow {
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
 
+    FontLoader {
+        id: fontLoader
+        source: "ionicons.ttf"
+    }
+
     header: ToolBar {
         contentHeight: toolBtn.implicitHeight
         ToolButton {
             id: toolBtn
             font.pixelSize: Qt.application.font.pixelSize * 1.6
+            font.family: "Ionicons"
+            text: Mdi.icon.mdMenu
+            //            IonIcon {
+            //                anchors.verticalCenter: parent.verticalCenter
 
-            IonIcon {
-                anchors.verticalCenter: parent.verticalCenter
-
-                iconName: Mdi.icon.mdMenu
-                iconColor: "#fff"
-                pointSize: 25
-            }
-
+            //                iconName: Mdi.icon.mdMenu
+            //                iconColor: "#fff"
+            //                pointSize: 25
+            //            }
             onClicked: {
                 drawer.open()
             }
         }
         Label {
-            text: "Contacts"
+            text: stack.currentItem.title
             anchors.centerIn: parent
         }
     }
@@ -105,6 +110,7 @@ ApplicationWindow {
         id: ind
         anchors.fill: parent
         running: viewLoader.status == Loader.Loading
+                 && viewLoader.source !== visible
     }
     StackView {
         id: stack

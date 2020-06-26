@@ -12,5 +12,7 @@
         <file>Icons.js</file>
         <file>ionicons.ttf</file>
         <file>IonIcon.qml</file>
+        <file>ListHeader.qml</file>
+        <file>refresh.svg</file>
     </qresource>
 </RCC>

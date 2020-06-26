@@ -38,33 +38,32 @@ Item {
         id: listView
         anchors.fill: parent
         spacing: 5
-        headerPositioning: ListView.OverlayHeader
+        headerPositioning: ListView.OverlayFooter
         width: parent.width
         height: parent.height
         model: contactModel
-
-        header: Rectangle {
+        footer: Rectangle {
             id: header
             color: "#2C2C2C"
             width: parent.width
             height: 50
             z: 2
-            Button {
-                id: doSearchBtn
-                anchors.right: searchField.left
-                font.family: "Ionicons"
-                text: Mdi.icon.mdRefresh
-                padding: 15
-                onClicked: {
 
-                    //                    Api.refreshModel(listView)
-                }
-            }
+            //            Button {
+            //                id: doSearchBtn
+            //                anchors.right: searchField.left
+            //                font.family: "Ionicons"
+            //                text: Mdi.icon.mdRefresh
+            //                padding: 15
+            //                onClicked: {
 
+            //                    //                    Api.refreshModel(listView)
+            //                }
+            //            }
             TextField {
                 id: searchField
                 color: "#fff"
-                width: 200
+                width: parent.width
                 height: parent.height
                 text: "Search.."
                 anchors.left: doSearchBtn.right
@@ -72,18 +71,27 @@ Item {
 
 
                     /*
-                    * TODO: FILTERING
-                    */
+                            * TODO: FILTERING
+                            */
                     console.log(searchField.text)
                 }
             }
+        }
+
+        onDragEnded: if (lHeader.refresh) {
+                         Api.refreshModel(listView)
+                     }
+
+        ListHeader {
+            id: lHeader
+            y: -listView.contentY - height
         }
 
         delegate: Component {
             id: contactDelegate
 
             Rectangle {
-                id: contactId
+                id: contactContainer
                 width: contactsView.width
                 height: contactsView.height / 10
                 color: "#2C2C2C"
@@ -113,24 +121,24 @@ Item {
 
                 Rectangle {
                     id: iconContainer
-                    width: 50
-                    height: 50
-                    radius: width * 0.5
-                    color: darkColor
                     anchors.verticalCenter: parent.verticalCenter
+                    width: 60
+                    height: parent.height
+                    color: "blue"
                     Text {
                         text: contactName.charAt(0)
                         color: whiteColor
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            horizontalCenter: parent.horizontalCenter
+                        }
                     }
                 }
 
                 Rectangle {
-                    id: infoContainer
-                    //                    anchors.right: iconContainer.right
+                    id: informationContainer
                     anchors {
-                        right: iconContainer.right
+                        left: iconContainer.right
                         baseline: iconContainer.baseline
                     }
 
@@ -144,31 +152,24 @@ Item {
                     Text {
                         id: firstName
                         color: "#fff"
-                        text: contactName
-                        x: 10
+                        text: contactName ? contactName : "No name entered"
+                        x: 20
                     }
 
                     Text {
                         id: phoneNumber
                         color: "#e0e0e0"
-                        text: contactNumber ? contactNumber : "No number entered.."
-                        x: 10
+                        text: contactNumber ? contactNumber : "No number entered"
+                        x: 20
                         anchors {
                             top: firstName.bottom
                         }
                     }
                 }
-                Rectangle {
-                    anchors.right: contactId.right
-                    IonIcon {
-                        iconName: Mdi.icon.iosPersonAdd
-                        iconColor: "#fff"
-                        pointSize: 25
-                    }
-                }
             }
         }
     }
+
     RoundButton {
         text: qsTr("+")
         highlighted: true
