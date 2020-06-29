@@ -3,10 +3,16 @@
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>ContactItem.qml</file>
-        <file>ContactsModel.qml</file>
         <file>ApiHelper.js</file>
         <file>MyContacts.qml</file>
         <file>ContactDialog.qml</file>
         <file>CreateContactDialog.qml</file>
+        <file>SavedContact.qml</file>
+        <file>ContactsView.qml</file>
+        <file>Icons.js</file>
+        <file>ionicons.ttf</file>
+        <file>IonIcon.qml</file>
+        <file>ListHeader.qml</file>
+        <file>refresh.svg</file>
     </qresource>
 </RCC>

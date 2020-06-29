@@ -1,13 +1,14 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.12
+import QtQuick.Window 2.12
 
 GridLayout {
     id: grid
     columns: 2
     rows: 5
 
-    width: appWindow.width
+    width: Screen.width
     height: 600
     property string firstname
     property string lastname

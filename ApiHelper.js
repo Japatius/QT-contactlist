@@ -1,8 +1,6 @@
 let URL = "https://qtphone.herokuapp.com/contact"
-
-function func() {
-    return console.log("Moro")
-}
+let colors = ["#3390ff", "#ff3333", "#4cff33", "#ff8d33"]
+let randomColor = Math.floor(Math.random() * colors.length)
 
 
 /**
@@ -21,7 +19,6 @@ function fetchContacts(viewId) {
                                     "contactNumber": objectArray[i].mobile,
                                     "idText": objectArray[i].id
                                 })
-            console.log(objectArray[i].firstname)
         }
     }
     req.send()

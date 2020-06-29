@@ -2,49 +2,81 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
+import QtQuick.Window 2.12
 import "ApiHelper.js" as Api
+import "Icons.js" as Mdi
 
 ApplicationWindow {
     id: appWindow
     visible: true
-    width: 640
-    height: 480
+    width: Screen.width
+    height: Screen.height
+    //    width: 640
+    //    height: 480
     title: qsTr("Scroll")
 
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
 
-    Component.onCompleted: {
-        Api.func()
-        Api.fetchContacts(listView)
-        Api.fetchContactById("20")
+    FontLoader {
+        id: fontLoader
+        source: "ionicons.ttf"
     }
 
-    //    Loader {
-    //        id: dialogLoader
-    //        sourceComponent: diaComp
-    //        active: false
-    //    }
-    Loader {
-        id: createContactLoader
-        sourceComponent: createComp
-        active: false
+    header: ToolBar {
+        contentHeight: toolBtn.implicitHeight
+        ToolButton {
+            id: toolBtn
+            font.pixelSize: Qt.application.font.pixelSize * 1.6
+            font.family: "Ionicons"
+            text: Mdi.icon.mdMenu
+            //            IonIcon {
+            //                anchors.verticalCenter: parent.verticalCenter
+
+            //                iconName: Mdi.icon.mdMenu
+            //                iconColor: "#fff"
+            //                pointSize: 25
+            //            }
+            onClicked: {
+                drawer.open()
+            }
+        }
+        Label {
+            text: stack.currentItem.title
+            anchors.centerIn: parent
+        }
     }
 
-    //    Component {
-    //        id: diaComp
-    //        Dialog {
-    //            id: contactDialogId
-    //            contentItem: ContactDialog {
-    //                id: contactContentItemId
-    //                recievedId: idOfContact
-    //                cancelButton.onClicked: {
-    //                    contactDialogId.close()
-    //                }
-    //            }
-    //            standardButtons: StandardButton.Ok
-    //        }
-    //    }
+    Drawer {
+        id: drawer
+        width: appWindow.width * 0.66
+        height: appWindow.height
+
+        Column {
+            anchors.fill: parent
+            Label {
+                padding: 10
+                text: "Contact List"
+            }
+            ItemDelegate {
+                text: qsTr("Contacts")
+                width: parent.width
+                onClicked: {
+                    stack.push("main.qml")
+                    drawer.close()
+                }
+            }
+            ItemDelegate {
+                text: qsTr("My contacts")
+                width: parent.width
+                onClicked: {
+                    stack.push("MyContacts.qml")
+                    drawer.close()
+                }
+            }
+        }
+    }
+
     Component {
         id: createComp
         Dialog {
@@ -58,163 +90,49 @@ ApplicationWindow {
             standardButtons: StandardButton.Ok
         }
     }
-    footer: TabBar {
-        id: navigator
-        width: parent.width
-        currentIndex: swiper.currentIndex
-        TabButton {
-            text: qsTr("Contacts")
-        }
-        TabButton {
-            text: qsTr("My Contacts")
-        }
-    }
 
     ListModel {
         id: contactModel
     }
 
-    SwipeView {
-        id: swiper
+    Item {
+        id: contactPos
+        Loader {
+            id: viewLoader
+            anchors.fill: parent
+            source: "ContactsView.qml"
+            asynchronous: true
+            visible: status == Loader.Ready
+        }
+    }
+
+    BusyIndicator {
+        id: ind
         anchors.fill: parent
-        currentIndex: navigator.currentIndex
+        running: viewLoader.status == Loader.Loading
+                 && viewLoader.source !== visible
+    }
+    StackView {
+        id: stack
+        initialItem: contactPos
+        anchors.fill: parent
 
-        Item {
-            id: contactsView
-
-            ListView {
-                id: listView
-                anchors.fill: parent
-                spacing: 5
-                model: contactModel
-                headerPositioning: ListView.OverlayHeader
-                header: Rectangle {
-                    id: header
-                    color: "#2C2C2C"
-                    border.color: "#fff"
-                    width: parent.width
-                    height: 50
-                    z: 2
-                    Button {
-                        id: doSearchBtn
-                        text: "Reload"
-                        anchors.right: searchField.left
-                        onClicked: {
-                            Api.refreshModel(listView)
-                        }
-                    }
-
-                    TextField {
-                        id: searchField
-                        color: "#fff"
-                        width: 200
-                        height: parent.height
-                        text: "Search.."
-                        anchors.left: doSearchBtn.right
-
-                        onTextChanged: {
-
-                            if (text.length > 0)
-                                contactModel.get(text)
-                            console.log(searchField.text)
-                        }
-                    }
-                }
-
-                delegate: Component {
-                    id: contactDelegate
-
-                    Rectangle {
-                        id: contactId
-                        width: appWindow.width
-                        height: appWindow.height / 10
-                        color: "#2C2C2C"
-
-                        MouseArea {
-                            id: clickArea
-                            anchors.fill: parent
-
-                            // send id into dialog
-                            signal passId(variant item)
-                            onClicked: {
-
-                                listView.currentIndex = index
-
-                                console.log(contactModel.get(index).idText)
-                                var component = Qt.createComponent(
-                                            "ContactDialog.qml")
-                                var loadIt = component.createObject(appWindow, {
-                                                                        "recievedId": idOfContact.text
-                                                                    })
-                                passId(loadIt)
-                                loadIt.open()
-                            }
-                            onPassId: {
-                                console.log(item.recievedId + " was opened")
-                            }
-                        }
-
-                        Rectangle {
-                            id: iconContainer
-                            width: 50
-                            height: 50
-                            radius: width * 0.5
-                            color: darkColor
-
-                            Text {
-                                text: contactName.charAt(0)
-                                color: whiteColor
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.horizontalCenter: parent.horizontalCenter
-                            }
-                        }
-
-                        Item {
-                            id: infoContainer
-                            anchors.right: iconContainer.right
-
-                            Text {
-                                visible: false
-                                id: idOfContact
-                                text: idText
-                                color: "#fff"
-                            }
-
-                            Text {
-                                id: firstName
-                                color: "#fff"
-                                text: contactName
-                                x: 10
-                            }
-
-                            Text {
-                                id: phoneNumber
-                                color: "#e0e0e0"
-                                text: contactNumber ? contactNumber : "No number entered.."
-                                x: 10
-                                anchors {
-                                    top: firstName.bottom
-                                }
-                            }
-                        }
-                    }
-                }
+        pushEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: 200
             }
         }
 
-        MyContacts {}
-    }
-
-    RoundButton {
-        text: qsTr("+")
-        highlighted: true
-        anchors.margins: 10
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        onClicked: {
-            createContactLoader.active = false
-            createContactLoader.active = true
-            createContactLoader.item.open()
+        pushExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: 200
+            }
         }
     }
 }
