@@ -1,60 +1,96 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Window 2.12
-import QtQuick.LocalStorage 2.12
+import "Icons.js" as Mdi
 
 Item {
     width: Screen.width
     height: Screen.height
+    property int parentHeight: 150
+    property string rectangleColor: "#2C2C2C"
+    property string textColor: "#fff"
+
+    ContactModel {
+        id: contacts
+    }
+
+    Component.onCompleted: {
+        contacts.findGreetings()
+    }
+
+    FontLoader {
+        id: fontLoader
+        source: "ionicons.ttf"
+    }
 
     ListView {
         id: savedContactList
         anchors.fill: parent
-        model: ListModel {}
+        model: 10
         spacing: 10
+
         delegate: Rectangle {
             width: parent.width
-            height: 50
-            border.color: "#fff"
+            height: parentHeight
+            color: rectangleColor
+
+            Image {
+                id: placeholder
+                source: "https://web.klassroom.co/images/placeholder.png"
+                width: 50
+                height: 50
+            }
 
             Text {
                 id: name
                 anchors {
-                    verticalCenter: parent.verticalCenter
-                    horizontalCenter: parent.horizontalCenter
+                    left: placeholder.right
                 }
 
-                font.pointSize: 16
-                color: "#000000"
-                text: "incoming"
+                font.pointSize: 24
+                color: textColor
+                text: qsTr("Firstname ")
+            }
 
-                function findContacts() {
-                    var db = LocalStorage.openDatabaseSync(
-                                "ContactsDatabase", "1.0",
-                                "Database for contacts", 1000000)
+            Text {
+                id: lName
+                anchors.left: name.right
+                font.pointSize: 24
+                color: textColor
+                text: qsTr("Lastname")
+            }
 
-                    db.transaction(function (tx) {
-                        // create DB
-                        tx.executeSql(
-                                    'CREATE TABLE IF NOT EXISTS Contacts(firstname TEXT, phone TEXT)')
+            Rectangle {
+                id: descriptionRectangle
+                anchors.top: placeholder.bottom
+                width: parent.width
+                height: childrenRect.height + 20
+                color: rectangleColor
 
-                        tx.executeSql('INSERT INTO Contacts VALUES (?, ?)',
-                                      ['Matti Mallikas', '358012331'])
+                Text {
+                    id: description
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    color: textColor
+                    text: qsTr("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                }
 
-                        var getGot = tx.executeSql('SELECT * FROM Contacts')
-
-                        var res = ""
-                        for (var i = 0; i < getGot.rows.length; i++) {
-
-                            res += getGot.rows.item(
-                                        i).firstname + ": " + getGot.rows.item(
-                                        i).phone + "\n"
+                Rectangle {
+                    anchors {
+                        top: description.bottom
+                    }
+                    Button {
+                        id: button
+                        text: Mdi.icon.mdTrash
+                        background: Rectangle {
+                            implicitWidth: 25
+                            implicitHeight: 25
+                            color: button.down ? "#000000" : "red"
+                            border.color: "#26282a"
+                            border.width: 1
+                            radius: 10
                         }
-                        text = res
-                    })
-                }
-                Component.onCompleted: {
-                    findContacts()
+                    }
                 }
             }
         }

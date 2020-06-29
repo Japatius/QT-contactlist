@@ -13,10 +13,14 @@ Item {
 
     Component.onCompleted: {
         Api.fetchContacts(listView)
+        //        contacts.fetchContacts(listView)
     }
 
-    ListModel {
-        id: contactModel
+    ContactModel {
+        id: contacts
+        Component.onCompleted: {
+            console.log("Kassi poeg")
+        }
     }
 
     MessageDialog {
@@ -41,7 +45,9 @@ Item {
         headerPositioning: ListView.OverlayFooter
         width: parent.width
         height: parent.height
-        model: contactModel
+        model: ListModel {
+            id: theModel
+        }
         footer: Rectangle {
             id: header
             color: "#2C2C2C"
@@ -66,7 +72,6 @@ Item {
                 width: parent.width
                 height: parent.height
                 text: "Search.."
-                anchors.left: doSearchBtn.right
                 onTextChanged: {
 
 
@@ -103,10 +108,9 @@ Item {
                     // send id into dialog
                     signal passId(variant item)
                     onClicked: {
-
                         listView.currentIndex = index
 
-                        console.log(contactModel.get(index).idText)
+                        console.log(theModel.get(index).idText)
                         var component = Qt.createComponent("ContactDialog.qml")
                         var loadIt = component.createObject(contactsView, {
                                                                 "recievedId": idOfContact.text
@@ -127,6 +131,7 @@ Item {
                     color: "blue"
                     Text {
                         text: contactName.charAt(0)
+                        font.pointSize: 24
                         color: whiteColor
                         anchors {
                             verticalCenter: parent.verticalCenter
@@ -154,6 +159,7 @@ Item {
                         color: "#fff"
                         text: contactName ? contactName : "No name entered"
                         x: 20
+                        font.pointSize: 22
                     }
 
                     Text {
@@ -161,6 +167,7 @@ Item {
                         color: "#e0e0e0"
                         text: contactNumber ? contactNumber : "No number entered"
                         x: 20
+                        font.pointSize: 16
                         anchors {
                             top: firstName.bottom
                         }

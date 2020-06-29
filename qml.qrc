@@ -14,5 +14,6 @@
         <file>IonIcon.qml</file>
         <file>ListHeader.qml</file>
         <file>refresh.svg</file>
+        <file>ContactModel.qml</file>
     </qresource>
 </RCC>

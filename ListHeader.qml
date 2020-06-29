@@ -13,7 +13,7 @@ Item {
 
         Text {
             id: label
-            anchors.verticalCenter: arrow.verticalCenter
+            anchors.verticalCenter: parent.verticalCenter
             text: "Pull to refresh...    "
             font.pixelSize: 18
             color: "#999999"
@@ -24,10 +24,10 @@ Item {
         State {
             name: "base"
             when: listView.contentY >= -120
-            PropertyChanges {
-                target: arrow
-                rotation: 180
-            }
+            //            PropertyChanges {
+            //                target: arrow
+            //                rotation: 180
+            //            }
         },
         State {
             name: "pulled"
@@ -36,10 +36,10 @@ Item {
                 target: label
                 text: "Release to refresh..."
             }
-            PropertyChanges {
-                target: arrow
-                rotation: 0
-            }
+            //            PropertyChanges {
+            //                target: arrow
+            //                rotation: 0
+            //            }
         }
     ]
 }

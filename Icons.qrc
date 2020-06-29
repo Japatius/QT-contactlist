@@ -1,5 +1,1 @@
-<RCC>
-    <qresource prefix="/icons">
-        <file alias="refresh">refresh-24px.svg</file>
-    </qresource>
-</RCC>
+<RCC/>

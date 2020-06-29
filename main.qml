@@ -42,7 +42,7 @@ ApplicationWindow {
             }
         }
         Label {
-            text: stack.currentItem.title
+            text: "<Contacts/>"
             anchors.centerIn: parent
         }
     }
@@ -89,10 +89,6 @@ ApplicationWindow {
             }
             standardButtons: StandardButton.Ok
         }
-    }
-
-    ListModel {
-        id: contactModel
     }
 
     Item {

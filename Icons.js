@@ -674,7 +674,7 @@ var icon = {
     "md-today": "\uf17d",
     "md-train": "\uf396",
     "md-transgender": "\uf397",
-    "md-trash": "\uf398",
+    "mdTrash": "\uf398",
     "md-trending-down": "\uf399",
     "md-trending-up": "\uf39a",
     "md-trophy": "\uf39b",
