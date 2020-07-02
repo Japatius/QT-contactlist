@@ -14,10 +14,9 @@ Item {
         id: contacts
     }
 
-    Component.onCompleted: {
-        contacts.findGreetings()
-    }
-
+    //    Component.onCompleted: {
+    //        contacts.initDatabase()
+    //    }
     FontLoader {
         id: fontLoader
         source: "ionicons.ttf"

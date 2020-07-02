@@ -18,6 +18,13 @@ ApplicationWindow {
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
 
+    //    ContactModel {
+    //        id: contacts
+    //    }
+
+    //    Component.onCompleted: {
+    //        contacts.initDb()
+    //    }
     FontLoader {
         id: fontLoader
         source: "ionicons.ttf"

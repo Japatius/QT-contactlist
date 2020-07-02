@@ -11,16 +11,16 @@ Item {
     width: Screen.width
     height: Screen.height
 
-    Component.onCompleted: {
-        Api.fetchContacts(listView)
-        //        contacts.fetchContacts(listView)
-    }
-
     ContactModel {
         id: contacts
         Component.onCompleted: {
             console.log("Kassi poeg")
         }
+    }
+
+    Component.onCompleted: {
+        Api.fetchContacts(listView)
+        //        contacts.fetchContacts(listView)
     }
 
     MessageDialog {
@@ -42,14 +42,14 @@ Item {
         id: listView
         anchors.fill: parent
         spacing: 5
-        headerPositioning: ListView.OverlayFooter
+        footerPositioning: ListView.OverlayFooter
         width: parent.width
         height: parent.height
         model: ListModel {
             id: theModel
         }
         footer: Rectangle {
-            id: header
+            id: footer
             color: "#2C2C2C"
             width: parent.width
             height: 50
@@ -177,12 +177,18 @@ Item {
         }
     }
 
+    //    BusyIndicator {
+    //        id: loadingIndicator
+    //        anchors.fill: parent
+    //                running: viewLoader.status == Loader.Loading
+    //                         && viewLoader.source !== visible
+    //    }
     RoundButton {
         text: qsTr("+")
         highlighted: true
         anchors.margins: 10
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        //        anchors.bottom: footer.top
         onClicked: {
             createContactLoader.active = false
             createContactLoader.active = true
