@@ -9,14 +9,16 @@ Item {
     property int parentHeight: 150
     property string rectangleColor: "#2C2C2C"
     property string textColor: "#fff"
+    property string placeholderText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
     ContactModel {
         id: contacts
     }
 
-    //    Component.onCompleted: {
-    //        contacts.initDatabase()
-    //    }
+    Component.onCompleted: {
+        contacts.initTable()
+        contacts.listContacts(savedContactList)
+    }
     FontLoader {
         id: fontLoader
         source: "ionicons.ttf"
@@ -25,7 +27,7 @@ Item {
     ListView {
         id: savedContactList
         anchors.fill: parent
-        model: 10
+        model: ListModel {}
         spacing: 10
 
         delegate: Rectangle {
@@ -33,35 +35,48 @@ Item {
             height: parentHeight
             color: rectangleColor
 
-            Image {
-                id: placeholder
-                source: "https://web.klassroom.co/images/placeholder.png"
+            //            Image {
+            //                id: placeholder
+            //                source: "https://web.klassroom.co/images/placeholder.png"
+            //                width: 50
+            //                height: 50
+            //            }
+            Rectangle {
+                id: charCon
                 width: 50
                 height: 50
+
+                Text {
+                    font.pointSize: 24
+                    text: firstName.charAt(0)
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        horizontalCenter: parent.horizontalCenter
+                    }
+                }
             }
 
             Text {
                 id: name
                 anchors {
-                    left: placeholder.right
+                    left: charCon.right
                 }
 
                 font.pointSize: 24
                 color: textColor
-                text: qsTr("Firstname ")
+                text: firstName ? firstName : "No name entered"
             }
 
-            Text {
-                id: lName
-                anchors.left: name.right
-                font.pointSize: 24
-                color: textColor
-                text: qsTr("Lastname")
-            }
-
+            //            Text {
+            //                id: lName
+            //                anchors.left: name.right
+            //                font.pointSize: 24
+            //                color: textColor
+            //                text: qsTr("Lastname")
+            //            }
             Rectangle {
                 id: descriptionRectangle
-                anchors.top: placeholder.bottom
+                anchors.top: charCon.bottom
                 width: parent.width
                 height: childrenRect.height + 20
                 color: rectangleColor
@@ -71,12 +86,14 @@ Item {
                     width: parent.width
                     wrapMode: Text.WordWrap
                     color: textColor
-                    text: qsTr("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                    text: placeholderText
                 }
 
                 Rectangle {
+                    id: actionsContainer
                     anchors {
                         top: description.bottom
+                        horizontalCenter: parent.horizontalCenter
                     }
                     Button {
                         id: button
