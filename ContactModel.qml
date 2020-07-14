@@ -21,7 +21,6 @@ Item {
 
     function initTable() {
         var db = initDb()
-
         try {
             db.transaction(function (trx) {
                 trx.executeSql(
@@ -47,15 +46,13 @@ Item {
 
     function insertContact(id, name, phone, email) {
         var db = initDb()
-
         try {
             db.transaction(function (trx) {
                 trx.executeSql('INSERT INTO Contacts VALUES(?,?,?,?)',
-                               [name, phone, email])
+                               [id, name, phone, email])
+                var tp = trx.executeSql('SELECT * FROM Contacts')
+                console.log(tp.rows)
             })
-
-            var tp = tx.executeSql('SELECT * FROM Contacts')
-            console.log(tp.rows)
         } catch (e) {
             console.error(e)
         }
@@ -63,10 +60,9 @@ Item {
 
     function clearContacts() {
         var db = initDb()
-
         try {
             db.transaction(function (trx) {
-                trx.execute('DELETE * FROM Contacts')
+                trx.executeSql('DELETE FROM Contacts')
             })
             console.log("erased contacts")
         } catch (e) {
@@ -89,6 +85,26 @@ Item {
             })
         } catch (e) {
             console.error(e)
+        }
+    }
+
+    function deleteContact(id) {
+        var db = initDb()
+        try {
+            db.transaction(function (trx) {
+                trx.executeSql('DELETE FROM Contacts WHERE id=?', [id])
+            })
+            console.log("Deleted: ", id)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    function searchContacts(searchParam, viewId) {
+        var results = []
+
+        for (var i = 0; i < viewId.model.length; i++) {
+
         }
     }
 }

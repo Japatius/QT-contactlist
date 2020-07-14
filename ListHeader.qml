@@ -3,7 +3,6 @@ import QtQuick 2.0
 Item {
     height: 60
     width: parent.width
-
     property bool refresh: state == "pulled" ? true : false
 
     Row {

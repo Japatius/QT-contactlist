@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Window 2.12
+import QtQuick.Controls.Material 2.12
 import "Icons.js" as Mdi
 
 Item {
@@ -47,6 +48,7 @@ Item {
                 height: 50
 
                 Text {
+                    id: character
                     font.pointSize: 24
                     text: firstName.charAt(0)
                     anchors {
@@ -60,6 +62,7 @@ Item {
                 id: name
                 anchors {
                     left: charCon.right
+                    leftMargin: 10
                 }
 
                 font.pointSize: 24
@@ -97,14 +100,16 @@ Item {
                     }
                     Button {
                         id: button
-                        text: Mdi.icon.mdTrash
+                        //                        text: Mdi.icon.mdTrash
                         background: Rectangle {
                             implicitWidth: 25
                             implicitHeight: 25
-                            color: button.down ? "#000000" : "red"
-                            border.color: "#26282a"
-                            border.width: 1
-                            radius: 10
+                            color: "#2C2C2C"
+                            Text {
+                                font.pointSize: 24
+                                text: Mdi.icon.iosMore
+                                color: "#fff"
+                            }
                         }
                     }
                 }

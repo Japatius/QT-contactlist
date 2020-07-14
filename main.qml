@@ -36,13 +36,6 @@ ApplicationWindow {
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             font.family: "Ionicons"
             text: Mdi.icon.mdMenu
-            //            IonIcon {
-            //                anchors.verticalCenter: parent.verticalCenter
-
-            //                iconName: Mdi.icon.mdMenu
-            //                iconColor: "#fff"
-            //                pointSize: 25
-            //            }
             onClicked: {
                 drawer.open()
             }

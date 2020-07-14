@@ -48,41 +48,37 @@ Item {
         model: ListModel {
             id: theModel
         }
-        footer: Rectangle {
-            id: footer
-            color: "#2C2C2C"
-            width: parent.width
-            height: 50
-            z: 2
+        footer: SearchBar {}
 
-            //            Button {
-            //                id: doSearchBtn
-            //                anchors.right: searchField.left
-            //                font.family: "Ionicons"
-            //                text: Mdi.icon.mdRefresh
-            //                padding: 15
-            //                onClicked: {
+        //        footer: Rectangle {
+        //            id: footer
+        //            color: "#2C2C2C"
+        //            width: parent.width
+        //            height: 50
+        //            z: 2
 
-            //                    //                    Api.refreshModel(listView)
-            //                }
-            //            }
-            TextField {
-                id: searchField
-                color: "#fff"
-                width: parent.width
-                height: parent.height
-                text: "Search.."
-                onTextChanged: {
+        //            //            Button {
+        //            //                id: doSearchBtn
+        //            //                anchors.right: searchField.left
+        //            //                font.family: "Ionicons"
+        //            //                text: Mdi.icon.mdRefresh
+        //            //                padding: 15
+        //            //                onClicked: {
 
-
-                    /*
-                            * TODO: FILTERING
-                            */
-                    console.log(searchField.text)
-                }
-            }
-        }
-
+        //            //                    //                    Api.refreshModel(listView)
+        //            //                }
+        //            //            }
+        //            TextField {
+        //                id: searchField
+        //                color: "#fff"
+        //                width: parent.width
+        //                height: parent.height
+        //                text: "Search.."
+        //                onTextChanged: {
+        //                    console.log(searchField.text)
+        //                }
+        //            }
+        //        }
         onDragEnded: if (lHeader.refresh) {
                          Api.refreshModel(listView)
                      }
@@ -187,8 +183,7 @@ Item {
         text: qsTr("+")
         highlighted: true
         anchors.margins: 10
-        anchors.right: parent.right
-        //        anchors.bottom: footer.top
+        //        anchors.right: parent.right
         onClicked: {
             createContactLoader.active = false
             createContactLoader.active = true
