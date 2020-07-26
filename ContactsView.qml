@@ -11,12 +11,16 @@ Item {
     width: Screen.width
     height: Screen.height
 
-    Component.onCompleted: {
-        Api.fetchContacts(listView)
+    ContactModel {
+        id: contacts
+        Component.onCompleted: {
+            console.log("Kassi poeg")
+        }
     }
 
-    ListModel {
-        id: contactModel
+    Component.onCompleted: {
+        Api.fetchContacts(listView)
+        //        contacts.fetchContacts(listView)
     }
 
     MessageDialog {
@@ -38,46 +42,43 @@ Item {
         id: listView
         anchors.fill: parent
         spacing: 5
-        headerPositioning: ListView.OverlayFooter
+        footerPositioning: ListView.OverlayFooter
         width: parent.width
         height: parent.height
-        model: contactModel
-        footer: Rectangle {
-            id: header
-            color: "#2C2C2C"
-            width: parent.width
-            height: 50
-            z: 2
-
-            //            Button {
-            //                id: doSearchBtn
-            //                anchors.right: searchField.left
-            //                font.family: "Ionicons"
-            //                text: Mdi.icon.mdRefresh
-            //                padding: 15
-            //                onClicked: {
-
-            //                    //                    Api.refreshModel(listView)
-            //                }
-            //            }
-            TextField {
-                id: searchField
-                color: "#fff"
-                width: parent.width
-                height: parent.height
-                text: "Search.."
-                anchors.left: doSearchBtn.right
-                onTextChanged: {
-
-
-                    /*
-                            * TODO: FILTERING
-                            */
-                    console.log(searchField.text)
-                }
-            }
+        model: ListModel {
+            id: theModel
         }
+        footer: SearchBar {}
 
+        //        footer: Rectangle {
+        //            id: footer
+        //            color: "#2C2C2C"
+        //            width: parent.width
+        //            height: 50
+        //            z: 2
+
+        //            //            Button {
+        //            //                id: doSearchBtn
+        //            //                anchors.right: searchField.left
+        //            //                font.family: "Ionicons"
+        //            //                text: Mdi.icon.mdRefresh
+        //            //                padding: 15
+        //            //                onClicked: {
+
+        //            //                    //                    Api.refreshModel(listView)
+        //            //                }
+        //            //            }
+        //            TextField {
+        //                id: searchField
+        //                color: "#fff"
+        //                width: parent.width
+        //                height: parent.height
+        //                text: "Search.."
+        //                onTextChanged: {
+        //                    console.log(searchField.text)
+        //                }
+        //            }
+        //        }
         onDragEnded: if (lHeader.refresh) {
                          Api.refreshModel(listView)
                      }
@@ -103,10 +104,9 @@ Item {
                     // send id into dialog
                     signal passId(variant item)
                     onClicked: {
-
                         listView.currentIndex = index
 
-                        console.log(contactModel.get(index).idText)
+                        console.log(theModel.get(index).idText)
                         var component = Qt.createComponent("ContactDialog.qml")
                         var loadIt = component.createObject(contactsView, {
                                                                 "recievedId": idOfContact.text
@@ -127,6 +127,7 @@ Item {
                     color: "blue"
                     Text {
                         text: contactName.charAt(0)
+                        font.pointSize: 24
                         color: whiteColor
                         anchors {
                             verticalCenter: parent.verticalCenter
@@ -154,6 +155,7 @@ Item {
                         color: "#fff"
                         text: contactName ? contactName : "No name entered"
                         x: 20
+                        font.pointSize: 22
                     }
 
                     Text {
@@ -161,6 +163,7 @@ Item {
                         color: "#e0e0e0"
                         text: contactNumber ? contactNumber : "No number entered"
                         x: 20
+                        font.pointSize: 16
                         anchors {
                             top: firstName.bottom
                         }
@@ -170,12 +173,17 @@ Item {
         }
     }
 
+    //    BusyIndicator {
+    //        id: loadingIndicator
+    //        anchors.fill: parent
+    //                running: viewLoader.status == Loader.Loading
+    //                         && viewLoader.source !== visible
+    //    }
     RoundButton {
         text: qsTr("+")
         highlighted: true
         anchors.margins: 10
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        //        anchors.right: parent.right
         onClicked: {
             createContactLoader.active = false
             createContactLoader.active = true

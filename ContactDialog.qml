@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.12
 import "ApiHelper.js" as Api
+import "Icons.js" as Mdi
 
 ApplicationWindow {
     id: contactDialog
@@ -37,6 +38,15 @@ ApplicationWindow {
 
     property int titleSize: 48
     property int tstid: 16
+
+    FontLoader {
+        id: fontLoader
+        source: "ionicons.ttf"
+    }
+
+    ContactModel {
+        id: contactModel
+    }
 
     Component.onCompleted: {
         var req = new XMLHttpRequest()
@@ -191,6 +201,7 @@ ApplicationWindow {
                 height: 60
                 color: "#282828"
                 Button {
+                    id: updateButton
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: updateText
                     onClicked: {
@@ -199,6 +210,16 @@ ApplicationWindow {
                                           emailInput.text)
                     }
                 }
+                //                Button {
+                //                    id: addContactBtn
+                //                    anchors.left: updateButton.right
+                //                    text: Mdi.icon.iosPersonAdd
+                //                    font.pointSize: 24
+                //                    onClicked: {
+                //                        contactModel.insertContact(recievedId, fName,
+                //                                                   mobile, email)
+                //                    }
+                //                }
             }
         }
 
@@ -220,6 +241,16 @@ ApplicationWindow {
                     Api.refreshModel(listView)
                 }
             }
+        }
+    }
+    RoundButton {
+        text: Mdi.icon.iosPersonAdd
+        highlighted: true
+        anchors.margins: 10
+        y: parent.height - height - 12
+        anchors.right: parent.right
+        onClicked: {
+            contactModel.insertContact(recievedId, fName, mobile, email)
         }
     }
 }

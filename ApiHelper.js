@@ -1,6 +1,4 @@
 let URL = "https://qtphone.herokuapp.com/contact"
-let colors = ["#3390ff", "#ff3333", "#4cff33", "#ff8d33"]
-let randomColor = Math.floor(Math.random() * colors.length)
 
 
 /**
@@ -8,28 +6,31 @@ let randomColor = Math.floor(Math.random() * colors.length)
   **/
 function fetchContacts(viewId) {
     var req = new XMLHttpRequest()
-    req.open("GET", URL, true)
-    req.onload = function () {
-        var objectArray = JSON.parse(req.responseText)
+    try {
+        req.open("GET", URL, true)
+        req.onload = function () {
+            var objectArray = JSON.parse(req.responseText)
 
-        for (var i = 0; i < objectArray.length; i++) {
-            viewId.model.append({
-                                    "contactName": objectArray[i].firstname
-                                    + " " + objectArray[i].lastname,
-                                    "contactNumber": objectArray[i].mobile,
-                                    "idText": objectArray[i].id
-                                })
+            for (var i = 0; i < objectArray.length; i++) {
+                viewId.model.append({
+                                        "contactName": objectArray[i].firstname
+                                        + " " + objectArray[i].lastname,
+                                        "contactNumber": objectArray[i].mobile,
+                                        "idText": objectArray[i].id
+                                    })
+            }
         }
+        req.send()
+    } catch (e) {
+        console.error(e)
     }
-    req.send()
 }
 
 function refreshModel(viewId) {
     viewId.model.clear()
     fetchContacts(viewId)
+    console.log(viewId.count)
 }
-
-function filterContacts() {}
 
 
 /**
@@ -58,18 +59,6 @@ function createContact(firstname) {
     req.open("POST", URL, true)
     req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
 
-    //    var data = {
-    //        "firstname": firstname
-    //    }
-    //    var formattedData = data
-
-    //    req.onreadystatechange = function () {
-    //        if (req.readyState === 4 && req.status === 201) {
-    //            console.log("Contact created")
-    //        } else {
-    //            console.log("Something went wrong")
-    //        }
-    //    }
     req.send({
                  "firstname": firstname
              })
@@ -80,26 +69,28 @@ function createContact(firstname) {
   * Update a contact
   **/
 function updateContact(id, firstName, lastName, mobile, email) {
-    // TODO: Make it take an id from item
     var data = {}
     data.firstname = firstName
     data.lastname = lastName
     data.mobile = mobile
     data.email = email
     var json = JSON.stringify(data)
-
     var xhr = new XMLHttpRequest()
-    xhr.open("PUT", "https://qtphone.herokuapp.com/contact/" + id, true)
-    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
-    xhr.onload = function () {
-        var users = JSON.parse(xhr.responseText)
-        if (xhr.readyState === 4 && xhr.status === "200") {
-            console.log(users)
-        } else {
-            console.error(users)
+    try {
+        xhr.open("PUT", "https://qtphone.herokuapp.com/contact/" + id, true)
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText)
+            if (xhr.readyState === 4 && xhr.status === "200") {
+                console.log(users)
+            } else {
+                console.error(users)
+            }
         }
+        xhr.send(json)
+    } catch (e) {
+        console.error(e)
     }
-    xhr.send(json)
 }
 
 

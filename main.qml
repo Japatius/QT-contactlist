@@ -18,6 +18,12 @@ ApplicationWindow {
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
 
+    ContactModel {
+        id: contacts
+    }
+    Component.onCompleted: {
+        contacts.initDb()
+    }
     FontLoader {
         id: fontLoader
         source: "ionicons.ttf"
@@ -30,19 +36,12 @@ ApplicationWindow {
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             font.family: "Ionicons"
             text: Mdi.icon.mdMenu
-            //            IonIcon {
-            //                anchors.verticalCenter: parent.verticalCenter
-
-            //                iconName: Mdi.icon.mdMenu
-            //                iconColor: "#fff"
-            //                pointSize: 25
-            //            }
             onClicked: {
                 drawer.open()
             }
         }
         Label {
-            text: stack.currentItem.title
+            text: "<Contacts/>"
             anchors.centerIn: parent
         }
     }
@@ -89,10 +88,6 @@ ApplicationWindow {
             }
             standardButtons: StandardButton.Ok
         }
-    }
-
-    ListModel {
-        id: contactModel
     }
 
     Item {
