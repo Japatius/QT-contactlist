@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls.Material 2.12
+import QtQuick.Dialogs 1.2
 import "Icons.js" as Mdi
 
 Item {
@@ -28,10 +29,14 @@ Item {
     ListView {
         id: savedContactList
         anchors.fill: parent
-        model: ListModel {}
+        model: ListModel {
+            Component.onCompleted: {
+                console.log(savedContactList.model.count)
+            }
+        }
         spacing: 10
-
         delegate: Rectangle {
+            id: savedContactDelegate
             width: parent.width
             height: parentHeight
             color: rectangleColor
@@ -110,6 +115,40 @@ Item {
                                 text: Mdi.icon.iosMore
                                 color: "#fff"
                             }
+                        }
+                        onClicked: {
+                            dialogLoader.active = false
+                            dialogLoader.active = true
+                            dialogLoader.item.open()
+                        }
+                    }
+                }
+            }
+        }
+
+        Loader {
+            id: dialogLoader
+            sourceComponent: optionDialog
+            active: false
+        }
+
+        Component {
+            id: optionDialog
+
+            Dialog {
+                title: "Options"
+                visible: false
+
+                contentItem: Rectangle {
+                    width: 200
+                    height: 400
+                    Text {
+                        text: "teksti"
+                    }
+                    Button {
+                        text: "Sulje"
+                        onClicked: {
+                            dialogLoader.item.close()
                         }
                     }
                 }

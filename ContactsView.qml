@@ -14,22 +14,13 @@ Item {
     ContactModel {
         id: contacts
         Component.onCompleted: {
-            console.log("Kassi poeg")
+            console.log("Contacts model ready")
         }
     }
 
     Component.onCompleted: {
         Api.fetchContacts(listView)
         //        contacts.fetchContacts(listView)
-    }
-
-    MessageDialog {
-        id: snackbar
-        title: "Testaus?"
-        text: "testi teksti"
-        onAccepted: {
-            console.log("closed")
-        }
     }
 
     Loader {
@@ -48,37 +39,47 @@ Item {
         model: ListModel {
             id: theModel
         }
-        footer: SearchBar {}
 
-        //        footer: Rectangle {
-        //            id: footer
-        //            color: "#2C2C2C"
-        //            width: parent.width
-        //            height: 50
-        //            z: 2
+        footer: Rectangle {
+            id: searchRectangle
+            color: "#2C2C2C"
+            width: Screen.width
+            height: 50
+            z: 2
 
-        //            //            Button {
-        //            //                id: doSearchBtn
-        //            //                anchors.right: searchField.left
-        //            //                font.family: "Ionicons"
-        //            //                text: Mdi.icon.mdRefresh
-        //            //                padding: 15
-        //            //                onClicked: {
+            //            Button {
+            //                id: doSearchBtn
+            //                anchors.right: searchField.left
+            //                font.family: "Ionicons"
+            //                text: Mdi.icon.mdRefresh
+            //                padding: 15
+            //                onClicked: {
 
-        //            //                    //                    Api.refreshModel(listView)
-        //            //                }
-        //            //            }
-        //            TextField {
-        //                id: searchField
-        //                color: "#fff"
-        //                width: parent.width
-        //                height: parent.height
-        //                text: "Search.."
-        //                onTextChanged: {
-        //                    console.log(searchField.text)
-        //                }
-        //            }
-        //        }
+            //                    //                    Api.refreshModel(listView)
+            //                }
+            //            }
+            TextField {
+                id: searchField
+                color: "#fff"
+                width: parent.width
+                height: parent.height
+
+                function searchIt(input) {
+                    for (var i = 0; i < theModel.count; i++) {
+
+                        if (theModel.get(i).contactName.includes(input)) {
+                            console.log(theModel.get(
+                                            i).contactName + " " + input)
+                        }
+                    }
+                }
+
+                onTextChanged: {
+                    var searchString = searchField.text
+                    searchIt(searchString)
+                }
+            }
+        }
         onDragEnded: if (lHeader.refresh) {
                          Api.refreshModel(listView)
                      }
@@ -180,6 +181,7 @@ Item {
     //                         && viewLoader.source !== visible
     //    }
     RoundButton {
+        visible: false
         text: qsTr("+")
         highlighted: true
         anchors.margins: 10

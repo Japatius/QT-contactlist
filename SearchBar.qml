@@ -3,7 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Window 2.12
 
 Rectangle {
-    id: footer
+    id: searchRectangle
     color: "#2C2C2C"
     width: Screen.width
     height: 50

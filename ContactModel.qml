@@ -99,12 +99,4 @@ Item {
             console.error(e)
         }
     }
-
-    function searchContacts(searchParam, viewId) {
-        var results = []
-
-        for (var i = 0; i < viewId.model.length; i++) {
-
-        }
-    }
 }

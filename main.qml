@@ -21,9 +21,11 @@ ApplicationWindow {
     ContactModel {
         id: contacts
     }
+
     Component.onCompleted: {
         contacts.initDb()
     }
+
     FontLoader {
         id: fontLoader
         source: "ionicons.ttf"
@@ -41,7 +43,7 @@ ApplicationWindow {
             }
         }
         Label {
-            text: "<Contacts/>"
+            text: "Contacts"
             anchors.centerIn: parent
         }
     }
@@ -104,9 +106,12 @@ ApplicationWindow {
     BusyIndicator {
         id: ind
         anchors.fill: parent
+        width: 150
+        height: 150
         running: viewLoader.status == Loader.Loading
                  && viewLoader.source !== visible
     }
+
     StackView {
         id: stack
         initialItem: contactPos

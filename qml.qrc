@@ -15,5 +15,6 @@
         <file>ListHeader.qml</file>
         <file>ContactModel.qml</file>
         <file>SearchBar.qml</file>
+        <file>TestButton.qml</file>
     </qresource>
 </RCC>
