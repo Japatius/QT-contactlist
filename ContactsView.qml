@@ -47,17 +47,6 @@ Item {
             height: 50
             z: 2
 
-            //            Button {
-            //                id: doSearchBtn
-            //                anchors.right: searchField.left
-            //                font.family: "Ionicons"
-            //                text: Mdi.icon.mdRefresh
-            //                padding: 15
-            //                onClicked: {
-
-            //                    //                    Api.refreshModel(listView)
-            //                }
-            //            }
             TextField {
                 id: searchField
                 color: "#fff"
@@ -90,7 +79,7 @@ Item {
         }
 
         delegate: Component {
-            id: contactDelegate
+            id: contactDelega
 
             Rectangle {
                 id: contactContainer
@@ -174,12 +163,6 @@ Item {
         }
     }
 
-    //    BusyIndicator {
-    //        id: loadingIndicator
-    //        anchors.fill: parent
-    //                running: viewLoader.status == Loader.Loading
-    //                         && viewLoader.source !== visible
-    //    }
     RoundButton {
         visible: false
         text: qsTr("+")

@@ -5,12 +5,13 @@ import "ApiHelper.js" as Api
 
 Item {
     id: savedContact
-    width: Screen.width
-    height: Screen.height
 
+    //    width: Screen.width
+    //    height: Screen.height
     Loader {
         anchors.fill: parent
-        source: "SavedContact.qml"
+        //        source: "SavedContact.qml"
+        source: "SavedContactsView.qml"
         visible: status == Loader.Ready
     }
 

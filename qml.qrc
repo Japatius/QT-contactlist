@@ -16,5 +16,6 @@
         <file>ContactModel.qml</file>
         <file>SearchBar.qml</file>
         <file>TestButton.qml</file>
+        <file>SavedContactsView.qml</file>
     </qresource>
 </RCC>

@@ -2,16 +2,21 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import "ApiHelper.js" as Api
 
-Component {
+Item {
+    //        id: contactDelegate
+    property alias nameChar: contactCharacter.text
+    property alias idString: idOfContact.text
+    property alias nameString: firstName.text
+    property alias phoneString: phoneNumber.text
 
-    //    property string idText
-    //    property string contactName
-    //    property string contactNumber
-    id: contactDelegate
+    property alias viewId: ""
+    property alias modelo: ""
+    property alias contactScreen: ""
+
     Rectangle {
-        id: contactId
-        width: appWindow.width
-        height: appWindow.height / 10
+        id: contactContainer
+        width: parent.width
+        height: parent.height / 10
         color: "#2C2C2C"
 
         MouseArea {
@@ -21,12 +26,11 @@ Component {
             // send id into dialog
             signal passId(variant item)
             onClicked: {
+                viewId.currentIndex = index
 
-                listView.currentIndex = index
-
-                console.log(contactModel.get(index).idText)
+                console.log(modelo.get(index).idText)
                 var component = Qt.createComponent("ContactDialog.qml")
-                var loadIt = component.createObject(appWindow, {
+                var loadIt = component.createObject(contactScreen, {
                                                         "recievedId": idOfContact.text
                                                     })
                 passId(loadIt)
@@ -39,42 +43,50 @@ Component {
 
         Rectangle {
             id: iconContainer
-            width: 50
-            height: 50
-            radius: width * 0.5
-            color: darkColor
-
+            anchors.verticalCenter: parent.verticalCenter
+            width: 60
+            height: parent.height
+            color: "blue"
             Text {
-                text: contactName.charAt(0)
+                id: contactCharacter
+                text: nameChar.charAt(0)
+                font.pointSize: 24
                 color: whiteColor
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    horizontalCenter: parent.horizontalCenter
+                }
             }
         }
 
-        Item {
-            id: infoContainer
-            anchors.right: iconContainer.right
+        Rectangle {
+            id: informationContainer
+            anchors {
+                left: iconContainer.right
+                baseline: iconContainer.baseline
+            }
 
             Text {
                 visible: false
                 id: idOfContact
-                text: idText
+                text: idString
                 color: "#fff"
             }
 
             Text {
                 id: firstName
                 color: "#fff"
-                text: contactName
-                x: 10
+                text: nameString ? nameString : "No name entered"
+                x: 20
+                font.pointSize: 22
             }
 
             Text {
                 id: phoneNumber
                 color: "#e0e0e0"
-                text: contactNumber ? contactNumber : "No number entered.."
-                x: 10
+                text: phoneString ? phoneString : "No number entered"
+                x: 20
+                font.pointSize: 16
                 anchors {
                     top: firstName.bottom
                 }

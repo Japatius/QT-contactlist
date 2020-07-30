@@ -29,24 +29,22 @@ Item {
     ListView {
         id: savedContactList
         anchors.fill: parent
+        width: parent.width
+        height: parent.height
+
         model: ListModel {
             Component.onCompleted: {
                 console.log(savedContactList.model.count)
             }
         }
         spacing: 10
+
         delegate: Rectangle {
             id: savedContactDelegate
             width: parent.width
             height: parentHeight
             color: rectangleColor
 
-            //            Image {
-            //                id: placeholder
-            //                source: "https://web.klassroom.co/images/placeholder.png"
-            //                width: 50
-            //                height: 50
-            //            }
             Rectangle {
                 id: charCon
                 width: 50
@@ -125,7 +123,6 @@ Item {
                 }
             }
         }
-
         Loader {
             id: dialogLoader
             sourceComponent: optionDialog

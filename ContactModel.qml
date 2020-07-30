@@ -78,7 +78,10 @@ Item {
                 for (var i = 0; i < select.rows.length; i++) {
                     viewId.model.append({
                                             "firstName": select.rows.item(
-                                                             i).name
+                                                             i).name,
+                                            "phoneNumber": select.rows.item(
+                                                               i).phone,
+                                            "email": select.rows.item(i).email
                                         })
                     console.log(i)
                 }

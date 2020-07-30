@@ -210,16 +210,6 @@ ApplicationWindow {
                                           emailInput.text)
                     }
                 }
-                //                Button {
-                //                    id: addContactBtn
-                //                    anchors.left: updateButton.right
-                //                    text: Mdi.icon.iosPersonAdd
-                //                    font.pointSize: 24
-                //                    onClicked: {
-                //                        contactModel.insertContact(recievedId, fName,
-                //                                                   mobile, email)
-                //                    }
-                //                }
             }
         }
 
