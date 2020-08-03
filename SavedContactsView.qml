@@ -16,8 +16,6 @@ Item {
 
     property real nameSize: 24
 
-    property bool isReadOnly: true
-
     ContactModel {
         id: contacts
     }
@@ -28,14 +26,6 @@ Item {
     }
 
     Component.onCompleted: {
-
-        //        for (var i = 0; i < 10; i++) {
-        //            savedListView.model.append({
-        //                                           "testiTeksti": "Teemu testaaja",
-        //                                           "testiNumero": "04012345678",
-        //                                           "testiPosti": "teemu@testilabra.fi"
-        //                                       })
-        //        }
         contacts.initTable()
         contacts.listContacts(savedListView)
     }
@@ -53,7 +43,7 @@ Item {
             anchors {
                 horizontalCenter: parent.horizontalCenter
             }
-
+            color: "#C4C4C4"
             width: savedView.width - 10
             height: savedView.height / 5
             radius: 10
@@ -64,20 +54,36 @@ Item {
             //                padding: 5
             //                font.pixelSize: nameSize
             //            }
-            TextField {
+            Text {
                 id: name
                 text: firstName
                 color: "black"
                 padding: 5
                 font.pixelSize: nameSize
-                readOnly: isReadOnly
+                x: 10
+                y: 5
             }
 
             Text {
                 id: phone
                 text: phoneNumber ? phoneNumber : testiNumero
-                anchors.top: name.bottom
+                anchors {
+                    top: name.bottom
+                    topMargin: 12
+                }
                 padding: 5
+                x: 60
+            }
+
+            Text {
+                text: Mdi.icon.mdMail
+                color: iconColor
+                font.pointSize: 26
+                padding: 5
+                anchors {
+                    left: name.left
+                    baseline: phone.baseline
+                }
             }
 
             Text {
@@ -85,62 +91,18 @@ Item {
                 text: email ? email : testiPosti
                 anchors.top: phone.bottom
                 padding: 5
+                x: 60
             }
-
-            Button {
-                id: editButton
-                background: Rectangle {
-                    implicitWidth: 25
-                    implicitHeight: 25
-                    color: "#fff"
-                    Text {
-                        font.pointSize: 28
-                        text: Mdi.icon.mdCreate
-                        color: iconColor
-                        //                        padding: 5
-                    }
-                }
-
-                onClicked: {
-                    isReadOnly = false
-                }
-
-                anchors {
-                    right: delegateRectangle.right
-                    baseline: name.baseline
-                }
-            }
-
-            Button {
-                id: deleteButton
-                background: Rectangle {
-                    implicitWidth: 25
-                    implicitHeight: 25
-                    color: "#fff"
-                    Text {
-                        font.pointSize: 28
-                        text: Mdi.icon.mdRemoveCircle
-                        color: iconColor
-                        //                        padding: 5
-                    }
-                }
-
-                anchors {
-                    right: editButton.left
-                    baseline: editButton.baseline
-                }
-            }
-        }
-        footerPositioning: ListView.OverlayFooter
-        footer: Rectangle {
-            width: savedView.width
-            height: 50
-            z: 2
-            border.color: "black"
 
             Text {
-                id: tekstoo
-                text: qsTr("Mega masturbator")
+                text: Mdi.icon.mdCall
+                color: iconColor
+                font.pointSize: 26
+                padding: 5
+                anchors {
+                    left: name.left
+                    baseline: emailAddress.baseline
+                }
             }
         }
     }

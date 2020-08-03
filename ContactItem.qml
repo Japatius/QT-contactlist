@@ -1,95 +1,66 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Window 2.12
 import "ApiHelper.js" as Api
 
 Item {
-    //        id: contactDelegate
-    property alias nameChar: contactCharacter.text
-    property alias idString: idOfContact.text
-    property alias nameString: firstName.text
-    property alias phoneString: phoneNumber.text
+    property alias contactId: hiddenId.text
+    property alias firstname: name.text
+    property alias phone: phoneNumber.text
+    property alias heightOfParent: contactItem.height
+    property real itemHeight: 100
+    property string fontColor: "#fff"
 
-    property alias viewId: ""
-    property alias modelo: ""
-    property alias contactScreen: ""
+    id: contactItem
+    height: heightOfParent
+    width: Screen.width
 
     Rectangle {
-        id: contactContainer
+        height: parent.height
         width: parent.width
-        height: parent.height / 10
         color: "#2C2C2C"
 
-        MouseArea {
-            id: clickArea
-            anchors.fill: parent
-
-            // send id into dialog
-            signal passId(variant item)
-            onClicked: {
-                viewId.currentIndex = index
-
-                console.log(modelo.get(index).idText)
-                var component = Qt.createComponent("ContactDialog.qml")
-                var loadIt = component.createObject(contactScreen, {
-                                                        "recievedId": idOfContact.text
-                                                    })
-                passId(loadIt)
-                loadIt.open()
-            }
-            onPassId: {
-                console.log(item.recievedId + " was opened")
-            }
-        }
-
         Rectangle {
-            id: iconContainer
-            anchors.verticalCenter: parent.verticalCenter
-            width: 60
+            id: letCont
             height: parent.height
-            color: "blue"
+            width: 50
             Text {
-                id: contactCharacter
-                text: nameChar.charAt(0)
-                font.pointSize: 24
-                color: whiteColor
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    horizontalCenter: parent.horizontalCenter
-                }
+                text: qsTr("GWA")
+            }
+            anchors {
+                left: parent.left
             }
         }
 
-        Rectangle {
-            id: informationContainer
+        Text {
+            id: hiddenId
+            visible: false
+            text: contactId
+        }
+
+        // TODO:
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                console.log(contactId)
+            }
+        }
+
+        Text {
+            id: name
+            text: firstname
+            color: fontColor
             anchors {
-                left: iconContainer.right
-                baseline: iconContainer.baseline
+                left: letCont.right
             }
+        }
 
-            Text {
-                visible: false
-                id: idOfContact
-                text: idString
-                color: "#fff"
-            }
-
-            Text {
-                id: firstName
-                color: "#fff"
-                text: nameString ? nameString : "No name entered"
-                x: 20
-                font.pointSize: 22
-            }
-
-            Text {
-                id: phoneNumber
-                color: "#e0e0e0"
-                text: phoneString ? phoneString : "No number entered"
-                x: 20
-                font.pointSize: 16
-                anchors {
-                    top: firstName.bottom
-                }
+        Text {
+            id: phoneNumber
+            text: phone
+            anchors {
+                top: name.bottom
+                left: letCont.right
             }
         }
     }
