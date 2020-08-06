@@ -76,7 +76,7 @@ Item {
             }
 
             Text {
-                text: Mdi.icon.mdMail
+                text: Mdi.icon.mdCall
                 color: iconColor
                 font.pointSize: 26
                 padding: 5
@@ -95,7 +95,7 @@ Item {
             }
 
             Text {
-                text: Mdi.icon.mdCall
+                text: Mdi.icon.mdMail
                 color: iconColor
                 font.pointSize: 26
                 padding: 5

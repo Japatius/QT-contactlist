@@ -78,20 +78,19 @@ ApplicationWindow {
         }
     }
 
-    Component {
-        id: createComp
-        Dialog {
-            id: createContactDialogId
-            contentItem: CreateContactDialog {
-                id: createContactContentId
-                closeButton.onClicked: {
-                    createContactDialogId.close()
-                }
-            }
-            standardButtons: StandardButton.Ok
-        }
-    }
-
+    //    Component {
+    //        id: createComp
+    //        Dialog {
+    //            id: createContactDialogId
+    //            contentItem: CreateContactDialog {
+    //                id: createContactContentId
+    //                closeButton.onClicked: {
+    //                    createContactDialogId.close()
+    //                }
+    //            }
+    //            standardButtons: StandardButton.Ok
+    //        }
+    //    }
     Item {
         id: contactPos
         Loader {
@@ -103,15 +102,14 @@ ApplicationWindow {
         }
     }
 
-    BusyIndicator {
-        id: ind
-        anchors.fill: parent
-        width: 150
-        height: 150
-        running: viewLoader.status == Loader.Loading
-                 && viewLoader.source !== visible
-    }
-
+    //    BusyIndicator {
+    //        id: ind
+    //        anchors.fill: parent
+    //        width: 150
+    //        height: 150
+    //        running: viewLoader.status == Loader.Loading
+    //                 && viewLoader.source !== visible
+    //    }
     StackView {
         id: stack
         initialItem: contactPos
