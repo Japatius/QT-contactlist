@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.12
+import QtQuick.LocalStorage 2.12
 import QtQuick.Window 2.12
 import "ApiHelper.js" as Api
 import "Icons.js" as Mdi
@@ -11,6 +12,16 @@ Item {
     height: 600
     property alias iidee: hidden.text
     property bool isUpdateMode: true
+    property bool isDatabaseMode: false
+    property string updateTxt: "Update"
+    property string addTxt: "Add"
+    property string fullName: firstnameInput.text + " " + lastnameInput.text
+
+    property string placeholderTxt: "<enter>"
+
+    ContactModel {
+        id: contacts
+    }
 
     Component.onCompleted: {
         if (isUpdateMode) {
@@ -31,7 +42,20 @@ Item {
             }
             req.send()
         }
+        if (isDatabaseMode) {
+            contacts.fetchOne(36)
+            //            var id = iidee
+            //            var db = contacts.initDb()
+            //            try {
+            //                db.transaction(function (trx) {
+            //                    trx.executeSql('SELECT * from Contacts WHERE id=?', [id])
+            //                })
+            //            } catch (e) {
+            //                console.error(e)
+            //            }
+        }
     }
+
     Text {
         id: hidden
         text: id
@@ -56,7 +80,7 @@ Item {
             }
             TextField {
                 id: firstnameInput
-                placeholderText: "Teppo"
+                placeholderText: placeholderTxt
                 Layout.minimumWidth: gridLayout.minimumInputSize
             }
             Text {
@@ -67,7 +91,7 @@ Item {
             }
             TextField {
                 id: lastnameInput
-                placeholderText: "Testi"
+                placeholderText: placeholderTxt
             }
             Text {
                 id: phone
@@ -77,7 +101,7 @@ Item {
             }
             TextField {
                 id: phoneInput
-                placeholderText: "010123"
+                placeholderText: placeholderTxt
             }
             Text {
                 id: email
@@ -87,17 +111,21 @@ Item {
             }
             TextField {
                 id: emailInput
-                placeholderText: "teppo@testi.com"
+                placeholderText: placeholderTxt
             }
 
             Button {
                 id: okButton
-                text: "OK"
+                text: isUpdateMode ? updateTxt : addTxt
                 Layout.alignment: Qt.AlignRight
                 onClicked: {
-                    Api.updateContact(iidee, firstnameInput.text,
-                                      lastnameInput.text, phoneInput.text,
-                                      emailInput.text)
+                    if (isUpdateMode) {
+                        Api.updateContact(iidee, firstnameInput.text,
+                                          lastnameInput.text, phoneInput.text,
+                                          emailInput.text)
+                    } else {
+                        console.log("Hek hek hek")
+                    }
                 }
             }
             Button {
@@ -106,7 +134,9 @@ Item {
                 Layout.alignment: Qt.AlignLeft
                 onClicked: {
                     theDialog.close()
-                    Api.refreshModel(listView)
+                    isDatabaseMode ? contacts.refreshSavedContacts(
+                                         savedListView) : Api.refreshModel(
+                                         listView)
                 }
             }
         }
@@ -120,7 +150,8 @@ Item {
         anchors.right: parent.right
         visible: isUpdateMode
         onClicked: {
-            contactModel.insertContact(recievedId, fName, mobile, email)
+            contacts.insertContact(iidee, fullName, phoneInput.text,
+                                   emailInput.text)
         }
     }
 }

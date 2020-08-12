@@ -9,9 +9,6 @@ Item {
     id: savedView
     width: Screen.width
     height: Screen.height
-    property string testiTeksti: "vakio"
-    property string testiNumero: "112"
-    property string testiPosti: "t@t.example"
     property string iconColor: "grey"
 
     property real nameSize: 24
@@ -28,6 +25,25 @@ Item {
     Component.onCompleted: {
         contacts.initTable()
         contacts.listContacts(savedListView)
+    }
+
+    Component {
+        id: createComp
+        Dialog {
+            id: theDialog
+            visible: false
+            contentItem: ContactDialog {
+                iidee: hiddenId.text
+                isUpdateMode: false
+                isDatabaseMode: true
+            }
+        }
+    }
+
+    Loader {
+        id: updateSavedContactLoader
+        sourceComponent: createComp
+        active: false
     }
 
     ListView {
@@ -48,12 +64,21 @@ Item {
             height: savedView.height / 5
             radius: 10
 
-            //            Text {
-            //                id: name
-            //                text: firstName
-            //                padding: 5
-            //                font.pixelSize: nameSize
-            //            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    updateSavedContactLoader.active = false
+                    updateSavedContactLoader.active = true
+                    updateSavedContactLoader.item.open()
+                }
+            }
+
+            Text {
+                visible: false
+                id: hiddenId
+                text: id
+            }
+
             Text {
                 id: name
                 text: firstName
