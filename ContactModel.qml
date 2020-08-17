@@ -2,7 +2,6 @@ import QtQuick 2.0
 import QtQuick.LocalStorage 2.12
 
 Item {
-
     property variant model: contacts
 
     ListModel {
@@ -44,20 +43,6 @@ Item {
         }
     }
 
-    function insertContact(id, name, phone, email) {
-        var db = initDb()
-        try {
-            db.transaction(function (trx) {
-                trx.executeSql('INSERT INTO Contacts VALUES(?,?,?,?)',
-                               [id, name, phone, email])
-                var tp = trx.executeSql('SELECT * FROM Contacts')
-                console.log(tp.rows)
-            })
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
     function clearContacts() {
         var db = initDb()
         try {
@@ -77,11 +62,61 @@ Item {
                 var select = trx.executeSql('SELECT * FROM Contacts')
                 for (var i = 0; i < select.rows.length; i++) {
                     viewId.model.append({
+                                            "id": select.rows.item(i).id,
                                             "firstName": select.rows.item(
-                                                             i).name
+                                                             i).name,
+                                            "phoneNumber": select.rows.item(
+                                                               i).phone,
+                                            "email": select.rows.item(i).email
                                         })
-                    console.log(i)
+                    console.log(select.rows.id)
                 }
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    function refreshSavedContacts(viewId) {
+        viewId.model.clear()
+        listContacts(viewId)
+    }
+
+    function fetchOne(id) {
+        var db = initDb()
+        try {
+            db.transaction(function (trx) {
+                //                trx.executeSql('SELECT * from Contacts WHERE id=?', [id])
+                var res = trx.executeSql(
+                            'SELECT * from Contacts WHERE id is $1', [id])
+                console.log(res.name)
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    function insertContact(id, name, phone, email) {
+        var db = initDb()
+        try {
+            db.transaction(function (trx) {
+                trx.executeSql('INSERT INTO Contacts VALUES(?,?,?,?)',
+                               [id, name, phone, email])
+                var tp = trx.executeSql('SELECT * FROM Contacts')
+                console.log(tp.rows)
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    function updateContact(name, phone, email, id) {
+        var db = initDb()
+        try {
+            db.transaction(function (trx) {
+                trx.executeSql(
+                            'UPDATE Contacts SET name=?, SET phone=?, SET email=? WHERE id=?',
+                            [name, phone, email, id])
             })
         } catch (e) {
             console.error(e)
@@ -97,14 +132,6 @@ Item {
             console.log("Deleted: ", id)
         } catch (e) {
             console.error(e)
-        }
-    }
-
-    function searchContacts(searchParam, viewId) {
-        var results = []
-
-        for (var i = 0; i < viewId.model.length; i++) {
-
         }
     }
 }

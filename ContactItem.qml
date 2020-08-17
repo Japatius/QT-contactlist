@@ -1,83 +1,98 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Window 2.12
+import QtQuick.Dialogs 1.2
 import "ApiHelper.js" as Api
 
-Component {
+Item {
+    property alias contactId: hiddenId.text
+    property alias firstname: name.text
+    property alias phone: phoneNumber.text
+    property alias heightOfParent: contactItem.height
+    property real itemHeight: 100
+    property string fontColor: "#fff"
 
-    //    property string idText
-    //    property string contactName
-    //    property string contactNumber
-    id: contactDelegate
+    id: contactItem
+    height: heightOfParent
+    width: Screen.width
+
+    Loader {
+        id: dialogLoader
+        active: false
+        sourceComponent: dialogComponent
+    }
+
+    Component {
+        id: dialogComponent
+        Dialog {
+            id: theDialog
+            visible: false
+            contentItem: ContactDialog {
+                iidee: contactId
+            }
+        }
+    }
+
     Rectangle {
-        id: contactId
-        width: appWindow.width
-        height: appWindow.height / 10
+        height: parent.height
+        width: parent.width
         color: "#2C2C2C"
+        Rectangle {
+            id: letCont
+            height: 40
+            width: 40
+            radius: 50
+            Text {
+                text: firstname.charAt(0)
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                }
+            }
+            anchors {
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+                leftMargin: 20
+            }
+        }
+
+        Text {
+            id: hiddenId
+            visible: false
+            text: contactId
+        }
 
         MouseArea {
-            id: clickArea
             anchors.fill: parent
-
-            // send id into dialog
-            signal passId(variant item)
             onClicked: {
-
-                listView.currentIndex = index
-
-                console.log(contactModel.get(index).idText)
-                var component = Qt.createComponent("ContactDialog.qml")
-                var loadIt = component.createObject(appWindow, {
-                                                        "recievedId": idOfContact.text
-                                                    })
-                passId(loadIt)
-                loadIt.open()
-            }
-            onPassId: {
-                console.log(item.recievedId + " was opened")
+                console.log(contactId)
+                dialogLoader.active = false
+                dialogLoader.active = true
+                dialogLoader.item.open()
             }
         }
 
-        Rectangle {
-            id: iconContainer
-            width: 50
-            height: 50
-            radius: width * 0.5
-            color: darkColor
-
-            Text {
-                text: contactName.charAt(0)
-                color: whiteColor
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
+        Text {
+            id: name
+            text: firstname
+            color: fontColor
+            leftPadding: 5
+            topPadding: 5
+            anchors {
+                left: letCont.right
+                leftMargin: 10
             }
         }
 
-        Item {
-            id: infoContainer
-            anchors.right: iconContainer.right
-
-            Text {
-                visible: false
-                id: idOfContact
-                text: idText
-                color: "#fff"
-            }
-
-            Text {
-                id: firstName
-                color: "#fff"
-                text: contactName
-                x: 10
-            }
-
-            Text {
-                id: phoneNumber
-                color: "#e0e0e0"
-                text: contactNumber ? contactNumber : "No number entered.."
-                x: 10
-                anchors {
-                    top: firstName.bottom
-                }
+        Text {
+            id: phoneNumber
+            text: phone
+            color: fontColor
+            leftPadding: 5
+            anchors {
+                top: name.bottom
+                left: letCont.right
+                leftMargin: 10
             }
         }
     }

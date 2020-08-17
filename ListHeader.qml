@@ -30,7 +30,7 @@ Item {
         },
         State {
             name: "pulled"
-            when: listView.contentY < -120
+            when: listView.contentY <= -120
             PropertyChanges {
                 target: label
                 text: "Release to refresh..."

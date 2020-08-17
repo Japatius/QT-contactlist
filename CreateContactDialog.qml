@@ -7,7 +7,6 @@ GridLayout {
     id: grid
     columns: 2
     rows: 5
-
     width: Screen.width
     height: 600
     property string firstname
@@ -17,24 +16,23 @@ GridLayout {
     property string placeholderText: "Enter"
     property int inputWidth: 100
     property alias closeButton: closeButton
-    property string testString
 
     Label {
         text: qsTr("Firstname")
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     TextField {
         id: firstnameInput
-        Layout.fillWidth: inputWidth
+        Layout.fillWidth: true
         Layout.minimumWidth: grid.minimumInputSize
         placeholderText: placeholderText
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     Label {
         text: qsTr("Lastname")
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     TextField {
@@ -42,12 +40,12 @@ GridLayout {
         Layout.fillWidth: inputWidth
         Layout.minimumWidth: grid.minimumInputSize
         placeholderText: placeholderText
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     Label {
         text: qsTr("Email")
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     TextField {
@@ -55,12 +53,12 @@ GridLayout {
         Layout.fillWidth: inputWidth
         Layout.minimumWidth: grid.minimumInputSize
         placeholderText: placeholderText
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     Label {
         text: qsTr("Mobile")
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     TextField {
@@ -68,18 +66,13 @@ GridLayout {
         Layout.fillWidth: inputWidth
         Layout.minimumWidth: grid.minimumInputSize
         placeholderText: placeholderText
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+        //        Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
     }
 
     Button {
         id: submitButton
         text: qsTr("Submit")
         onClicked: {
-
-
-            /**
-                  * TODO: do some validations
-                  **/
             var url = "https://qtphone.herokuapp.com/contact"
 
             var data = {}
@@ -112,5 +105,8 @@ GridLayout {
     Button {
         id: closeButton
         text: qsTr("Close")
+        onClicked: {
+            contactDialogId.close()
+        }
     }
 }
