@@ -14,7 +14,6 @@
         <file>IonIcon.qml</file>
         <file>ListHeader.qml</file>
         <file>ContactModel.qml</file>
-        <file>SearchBar.qml</file>
         <file>SavedContactsView.qml</file>
     </qresource>
 </RCC>

@@ -1,5 +1,3 @@
-let URL = "https://qtphone.herokuapp.com/contact"
-
 
 /**
   * Get contacts & append data for contacts list
@@ -7,7 +5,7 @@ let URL = "https://qtphone.herokuapp.com/contact"
 function fetchContacts(viewId) {
     var req = new XMLHttpRequest()
     try {
-        req.open("GET", URL, true)
+        req.open("GET", "https://qtphone.herokuapp.com/contact/", true)
         req.onload = function () {
             var objectArray = JSON.parse(req.responseText)
 
@@ -56,7 +54,7 @@ function fetchContactById(id) {
   **/
 function createContact(firstname) {
     var req = new XMLHttpRequest()
-    req.open("POST", URL, true)
+    req.open("POST", "https://qtphone.herokuapp.com/contact/", true)
     req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
 
     req.send({
@@ -92,9 +90,3 @@ function updateContact(id, firstName, lastName, mobile, email) {
         console.error(e)
     }
 }
-
-
-/**
-  * Delete a contact
-  **/
-function deleteContact() {}

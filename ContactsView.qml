@@ -32,46 +32,46 @@ Item {
         model: ListModel {
             id: theModel
         }
-        headerPositioning: ListView.OverlayHeader
-        header: Rectangle {
-            id: searchRectangle
-            color: "#2C2C2C"
-            width: Screen.width
-            height: 50
-            z: 2
-            TextField {
-                id: searchField
-                color: "#fff"
-                width: parent.width
-                height: parent.height
-                padding: 5
 
-                function searchIt(input) {
-                    for (var i = 0; i < theModel.count; i++) {
-                        if (theModel.get(i).contactName.includes(input)) {
-                            theModel.clear()
-                            theModel.append({
-                                                "contactName": theModel.get(
-                                                                   i).contactName,
-                                                "contactNumber": theModel.get(
-                                                                     i).mobile,
-                                                "idText": theModel.get(i).id
-                                            })
-                        }
-                    }
-                }
+        //        headerPositioning: ListView.OverlayHeader
+        //        header: Rectangle {
+        //            id: searchRectangle
+        //            color: "#2C2C2C"
+        //            width: Screen.width
+        //            height: 50
+        //            z: 2
+        //            TextField {
+        //                id: searchField
+        //                color: "#fff"
+        //                width: parent.width
+        //                height: parent.height
+        //                padding: 5
 
-                onTextChanged: {
-                    var searchString = searchField.text
-                    searchIt(searchString)
-                }
+        //                function searchIt(input) {
+        //                    for (var i = 0; i < theModel.count; i++) {
+        //                        if (theModel.get(i).contactName.includes(input)) {
+        //                            theModel.clear()
+        //                            theModel.append({
+        //                                                "contactName": theModel.get(
+        //                                                                   i).contactName,
+        //                                                "contactNumber": theModel.get(
+        //                                                                     i).mobile,
+        //                                                "idText": theModel.get(i).id
+        //                                            })
+        //                        }
+        //                    }
+        //                }
 
-                onAccepted: {
-                    searchField.focus = false
-                }
-            }
-        }
+        //                onTextChanged: {
+        //                    var searchString = searchField.text
+        //                    searchIt(searchString)
+        //                }
 
+        //                onAccepted: {
+        //                    searchField.focus = false
+        //                }
+        //            }
+        //        }
         onDragEnded: {
             if (lHeader.refresh) {
                 Api.refreshModel(listView)
