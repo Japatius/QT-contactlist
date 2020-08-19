@@ -10,7 +10,6 @@ Item {
 
     function initDb() {
         try {
-            console.log("Database initialized")
             return LocalStorage.openDatabaseSync("ContactsDatabase", "1.0",
                                                  "Contact DB", 1000000)
         } catch (e) {
@@ -24,10 +23,10 @@ Item {
             db.transaction(function (trx) {
                 trx.executeSql(
                             'CREATE TABLE IF NOT EXISTS Contacts(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, email TEXT)')
+
                 //                trx.executeSql(
                 //                            'INSERT INTO Contacts VALUES(?,?,?,?)',
                 //                            ["", "Test Name", "040123123", "initdata@test.com"])
-
                 //                var rs = trx.executeSql('SELECT * FROM Contacts')
 
                 //                var r = ""
@@ -69,7 +68,6 @@ Item {
                                                                i).phone,
                                             "email": select.rows.item(i).email
                                         })
-                    console.log(select.rows.id)
                 }
             })
         } catch (e) {
@@ -82,20 +80,25 @@ Item {
         listContacts(viewId)
     }
 
-    function fetchOne(id) {
-        var db = initDb()
-        try {
-            db.transaction(function (trx) {
-                //                trx.executeSql('SELECT * from Contacts WHERE id=?', [id])
-                var res = trx.executeSql(
-                            'SELECT * from Contacts WHERE id is $1', [id])
-                console.log(res.name)
-            })
-        } catch (e) {
-            console.error(e)
-        }
-    }
+    //    function fetchOne(id) {
+    //        var db = initDb()
+    //        try {
+    //            db.transaction(function (trx) {
+    //                trx.executeSql('SELECT * from Contacts WHERE id=?', [id])
+    //                var res = trx.executeSql(
+    //                            'SELECT * from Contacts WHERE id is $1', [id])
+    //                var select = executeSql('SELECT * from Contacts WHERE id=?',
+    //                                        [id])
+    //                for (var i = 0; i < select.rows.length; i++) {
 
+    //                }
+
+    //                console.log(res.name)
+    //            })
+    //        } catch (e) {
+    //            console.error(e)
+    //        }
+    //    }
     function insertContact(id, name, phone, email) {
         var db = initDb()
         try {

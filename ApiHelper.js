@@ -11,10 +11,9 @@ function fetchContacts(viewId) {
 
             for (var i = 0; i < objectArray.length; i++) {
                 viewId.model.append({
+                                        "idText": objectArray[i].id,
                                         "contactName": objectArray[i].firstname
-                                        + " " + objectArray[i].lastname,
-                                        "contactNumber": objectArray[i].mobile,
-                                        "idText": objectArray[i].id
+                                        + " " + objectArray[i].lastname
                                     })
             }
         }
@@ -48,18 +47,64 @@ function fetchContactById(id) {
     req.send()
 }
 
+function searchContacts(searchString) {
+    try {
+
+        if (!searchString) {
+            console.log("Search string empty")
+        }
+
+        var req = new XMLHttpRequest()
+        req.open("GET", "https://qtphone.herokuapp.com/contact", true)
+        req.onload = function () {
+            var objectArray = JSON.parse(req.responseText)
+            listView.model.clear()
+
+            for (var i = 0; i < objectArray.length; i++) {
+                if (objectArray[i].firstname.includes(searchString)
+                        || objectArray[i].lastname.includes(searchString)) {
+                    console.log(objectArray[i].firstname)
+                    listView.model.append({
+                                              "idText": objectArray[i].id,
+                                              "contactName": objectArray[i].firstname
+                                              + " " + objectArray[i].lastname
+                                          })
+                }
+            }
+        }
+
+        req.send()
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 
 /**
   * Create a new contact
   **/
-function createContact(firstname) {
-    var req = new XMLHttpRequest()
-    req.open("POST", "https://qtphone.herokuapp.com/contact/", true)
-    req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+function createContact(firstname, lastname, email, phone) {
+    try {
+        var data = {}
+        data.firstname = firstname
+        data.lastname = lastname
+        data.email = email
+        data.mobile = phone
+        var json = JSON.stringify(data)
 
-    req.send({
-                 "firstname": firstname
-             })
+        var req = new XMLHttpRequest()
+        req.open("POST", "https://qtphone.herokuapp.com/contact", true)
+        req.setRequestHeader('Content-type', 'application/json; charset=utf-8')
+        req.onload = function () {
+            var contacts = JSON.parse(req.responseText)
+            if (req.readyState === 4 && req.status === "201") {
+                console.log("201", contacts)
+            }
+        }
+        req.send(json)
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 

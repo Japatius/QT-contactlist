@@ -10,7 +10,7 @@ Item {
     width: Screen.width
     height: Screen.height
     property string iconColor: "grey"
-
+    property string rectangleColor: "#C4C4C4"
     property real nameSize: 24
 
     ContactModel {
@@ -27,25 +27,6 @@ Item {
         contacts.listContacts(savedListView)
     }
 
-    Component {
-        id: createComp
-        Dialog {
-            id: theDialog
-            visible: false
-            contentItem: ContactDialog {
-                iidee: hiddenId.text
-                isUpdateMode: false
-                isDatabaseMode: true
-            }
-        }
-    }
-
-    Loader {
-        id: updateSavedContactLoader
-        sourceComponent: createComp
-        active: false
-    }
-
     ListView {
         anchors.fill: parent
         width: parent.width
@@ -59,26 +40,20 @@ Item {
             anchors {
                 horizontalCenter: parent.horizontalCenter
             }
-            color: "#C4C4C4"
+            color: rectangleColor
             width: savedView.width - 10
             height: savedView.height / 5
             radius: 10
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    updateSavedContactLoader.active = false
-                    updateSavedContactLoader.active = true
-                    updateSavedContactLoader.item.open()
-                }
-            }
-
-            Text {
-                visible: false
-                id: hiddenId
-                text: id
-            }
-
+            //            MouseArea {
+            //                anchors.fill: parent
+            //                onClicked: {
+            //                    console.log(hiddenId.text)
+            //                    updateSavedContactLoader.active = false
+            //                    updateSavedContactLoader.active = true
+            //                    updateSavedContactLoader.item.open()
+            //                }
+            //            }
             Text {
                 id: name
                 text: firstName
@@ -129,6 +104,42 @@ Item {
                     baseline: emailAddress.baseline
                 }
             }
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: emailAddress.bottom
+                onClicked: {
+                    contacts.deleteContact(35)
+                }
+
+                background: Rectangle {
+                    color: rectangleColor
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: Mdi.icon.iosMore
+                        color: iconColor
+                        font.pointSize: 24
+                    }
+                }
+            }
         }
     }
+
+    //    Component {
+    //        id: createComp
+    //        Dialog {
+    //            id: theDialog
+    //            visible: false
+    //            contentItem: ContactDialog {
+    //                iidee: aidii
+    //                isUpdateMode: false
+    //            }
+    //        }
+    //    }
+
+    //    Loader {
+    //        id: updateSavedContactLoader
+    //        sourceComponent: createComp
+    //        active: false
+    //    }
 }

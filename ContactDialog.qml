@@ -12,7 +12,7 @@ Item {
     height: 600
     property alias iidee: hidden.text
     property bool isUpdateMode: true
-    property bool isDatabaseMode: false
+    property bool isCreateMode: false
     property string updateTxt: "Update"
     property string addTxt: "Add"
     property string fullName: firstnameInput.text + " " + lastnameInput.text
@@ -26,7 +26,6 @@ Item {
     Component.onCompleted: {
         if (isUpdateMode) {
             var req = new XMLHttpRequest()
-            // TODO: Pass ID when opening dialog
             req.open("GET",
                      "https://qtphone.herokuapp.com/contact/" + iidee, true)
             req.onload = function () {
@@ -42,18 +41,6 @@ Item {
             }
             req.send()
         }
-        if (isDatabaseMode) {
-            contacts.fetchOne(36)
-            //            var id = iidee
-            //            var db = contacts.initDb()
-            //            try {
-            //                db.transaction(function (trx) {
-            //                    trx.executeSql('SELECT * from Contacts WHERE id=?', [id])
-            //                })
-            //            } catch (e) {
-            //                console.error(e)
-            //            }
-        }
     }
 
     Text {
@@ -63,7 +50,7 @@ Item {
     }
 
     Rectangle {
-        width: 400
+        width: parent.width
         height: parent.height
         color: "#2C2C2C"
         //        anchors.horizontalCenter: parent.horizontalCenter
@@ -76,42 +63,45 @@ Item {
                 id: firstname
                 text: qsTr("Firstname")
                 color: "#fff"
-                Layout.alignment: Qt.AlignCenter
+                Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: firstnameInput
                 placeholderText: placeholderTxt
-                Layout.minimumWidth: gridLayout.minimumInputSize
+                Layout.alignment: Qt.AlignCenter
             }
             Text {
                 id: lastname
                 text: qsTr("Lastname")
                 color: "#fff"
-                Layout.alignment: Qt.AlignCenter
+                Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: lastnameInput
                 placeholderText: placeholderTxt
+                Layout.alignment: Qt.AlignCenter
             }
             Text {
                 id: phone
                 text: qsTr("Phone")
                 color: "#fff"
-                Layout.alignment: Qt.AlignCenter
+                Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: phoneInput
                 placeholderText: placeholderTxt
+                Layout.alignment: Qt.AlignCenter
             }
             Text {
                 id: email
                 text: qsTr("Email")
                 color: "#fff"
-                Layout.alignment: Qt.AlignCenter
+                Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: emailInput
                 placeholderText: placeholderTxt
+                Layout.alignment: Qt.AlignCenter
             }
 
             Button {
@@ -123,8 +113,11 @@ Item {
                         Api.updateContact(iidee, firstnameInput.text,
                                           lastnameInput.text, phoneInput.text,
                                           emailInput.text)
-                    } else {
-                        console.log("Hek hek hek")
+                    }
+                    if (isCreateMode) {
+                        Api.createContact(firstnameInput.text,
+                                          lastnameInput.text, phoneInput.text,
+                                          emailInput.text)
                     }
                 }
             }

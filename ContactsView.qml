@@ -46,29 +46,9 @@ Item {
         //                width: parent.width
         //                height: parent.height
         //                padding: 5
-
-        //                function searchIt(input) {
-        //                    for (var i = 0; i < theModel.count; i++) {
-        //                        if (theModel.get(i).contactName.includes(input)) {
-        //                            theModel.clear()
-        //                            theModel.append({
-        //                                                "contactName": theModel.get(
-        //                                                                   i).contactName,
-        //                                                "contactNumber": theModel.get(
-        //                                                                     i).mobile,
-        //                                                "idText": theModel.get(i).id
-        //                                            })
-        //                        }
-        //                    }
-        //                }
-
-        //                onTextChanged: {
-        //                    var searchString = searchField.text
-        //                    searchIt(searchString)
-        //                }
-
         //                onAccepted: {
         //                    searchField.focus = false
+        //                    Api.searchContacts(searchField.text)
         //                }
         //            }
         //        }
@@ -76,6 +56,9 @@ Item {
             if (lHeader.refresh) {
                 Api.refreshModel(listView)
             }
+        }
+        onDragStarted: {
+            console.log(listView.contentY)
         }
 
         ListHeader {
@@ -89,7 +72,6 @@ Item {
                 firstname: contactName
                 heightOfParent: contactsView.height / 10
                 contactId: idText
-                phone: contactNumber
             }
         }
     }
@@ -101,6 +83,7 @@ Item {
             visible: false
             contentItem: ContactDialog {
                 isUpdateMode: false
+                isCreateMode: true
             }
         }
     }

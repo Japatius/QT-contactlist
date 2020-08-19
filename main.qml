@@ -17,6 +17,7 @@ ApplicationWindow {
 
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
+    property string titleName: "Contacts"
 
     ContactModel {
         id: contacts
@@ -24,6 +25,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         contacts.initDb()
+        console.log(Screen.width, Screen.height)
     }
 
     FontLoader {
@@ -43,7 +45,7 @@ ApplicationWindow {
             }
         }
         Label {
-            text: "Contacts"
+            text: titleName
             anchors.centerIn: parent
         }
     }
@@ -67,6 +69,7 @@ ApplicationWindow {
                 padding: 5
                 font.pointSize: 20
                 onClicked: {
+                    titleName = "Contacts"
                     stack.push("main.qml")
                     drawer.close()
                 }
@@ -78,21 +81,11 @@ ApplicationWindow {
                 padding: 5
                 font.pointSize: 20
                 onClicked: {
+                    titleName = "My Contacts"
                     stack.push("MyContacts.qml")
                     drawer.close()
                 }
             }
-
-
-            /* test
-            ItemDelegate {
-                text: qsTr("test")
-                width: parent.width
-                onClicked: {
-                    stack.push("SavedContact.qml")
-                    drawer.close()
-                }
-            }*/
         }
     }
 
