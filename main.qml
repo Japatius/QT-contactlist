@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.12
+import QtQuick.Controls.Material 2.12
 import "ApiHelper.js" as Api
 import "Icons.js" as Mdi
 
@@ -35,6 +36,7 @@ ApplicationWindow {
 
     header: ToolBar {
         contentHeight: toolBtn.implicitHeight
+        Material.background: Material.color(Material.Lime)
         ToolButton {
             id: toolBtn
             font.pixelSize: Qt.application.font.pixelSize * 1.6

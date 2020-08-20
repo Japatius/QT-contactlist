@@ -46,8 +46,8 @@ Item {
         //                width: parent.width
         //                height: parent.height
         //                padding: 5
-        //                onAccepted: {
-        //                    searchField.focus = false
+        //                inputMethodHints: Qt.ImhNoPredictiveText
+        //                onTextChanged: {
         //                    Api.searchContacts(searchField.text)
         //                }
         //            }

@@ -1,7 +1,9 @@
 
 /**
-  * Get contacts & append data for contacts list
-  **/
+ * This file contains all the functions that have something to do with REST API
+**/
+
+// get all contacts and append into model
 function fetchContacts(viewId) {
     var req = new XMLHttpRequest()
     try {
@@ -23,16 +25,14 @@ function fetchContacts(viewId) {
     }
 }
 
+// refresh contacts
 function refreshModel(viewId) {
     viewId.model.clear()
     fetchContacts(viewId)
     console.log(viewId.count)
 }
 
-
-/**
-  * Get contact by ID
-  **/
+// get contact by id
 function fetchContactById(id) {
     var req = new XMLHttpRequest()
     req.open("GET", "https://qtphone.herokuapp.com/contact/" + id, true)
@@ -47,11 +47,12 @@ function fetchContactById(id) {
     req.send()
 }
 
+// search contacts from API
 function searchContacts(searchString) {
     try {
 
         if (!searchString) {
-            console.log("Search string empty")
+            return
         }
 
         var req = new XMLHttpRequest()
@@ -79,10 +80,7 @@ function searchContacts(searchString) {
     }
 }
 
-
-/**
-  * Create a new contact
-  **/
+// create new contact
 function createContact(firstname, lastname, email, phone) {
     try {
         var data = {}
@@ -107,10 +105,7 @@ function createContact(firstname, lastname, email, phone) {
     }
 }
 
-
-/**
-  * Update a contact
-  **/
+// update contact
 function updateContact(id, firstName, lastName, mobile, email) {
     var data = {}
     data.firstname = firstName
@@ -131,6 +126,24 @@ function updateContact(id, firstName, lastName, mobile, email) {
             }
         }
         xhr.send(json)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+// delete contact
+function deleteContact(id) {
+    var xhr = new XMLHttpRequest()
+    try {
+        xhr.open("DELETE", "https://qtphone.herokuapp.com/contact/" + id, true)
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+                print('DELETE HEADERS_RECEIVED')
+            } else if (xhr.readyState === XMLHttpRequest.DONE) {
+                print('DELETE DONE')
+            }
+        }
+        xhr.send()
     } catch (e) {
         console.error(e)
     }

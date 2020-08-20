@@ -15,5 +15,6 @@
         <file>ListHeader.qml</file>
         <file>ContactModel.qml</file>
         <file>SavedContactsView.qml</file>
+        <file>HeadsUpDialog.qml</file>
     </qresource>
 </RCC>
