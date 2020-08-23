@@ -16,5 +16,7 @@
         <file>ContactModel.qml</file>
         <file>SavedContactsView.qml</file>
         <file>HeadsUpDialog.qml</file>
+        <file>LoadingIndicator.qml</file>
+        <file>SearchField.qml</file>
     </qresource>
 </RCC>

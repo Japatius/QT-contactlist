@@ -13,11 +13,12 @@ Item {
     property alias iidee: hidden.text
     property bool isUpdateMode: true
     property bool isCreateMode: false
-    property bool isReadOnly: true
     property bool wantToDelete: false
+    property bool addToDb: false
     property string updateTxt: "Update"
     property string addTxt: "Add"
     property string fullName: firstnameInput.text + " " + lastnameInput.text
+    property string prevName: ""
     property string dialogMessage
     property string placeholderTxt: "<enter>"
 
@@ -39,6 +40,7 @@ Item {
                     phoneInput.text = objectArray[i].mobile
                     //                console.log(fName, lName, email, mobile)
                     //                console.log(recievedId)
+                    prevName = objectArray[i].firstname + " " + objectArray[i].lastname
                 }
             }
             req.send()
@@ -77,7 +79,6 @@ Item {
                 id: firstnameInput
                 placeholderText: placeholderTxt
                 Layout.alignment: Qt.AlignCenter
-                readOnly: isReadOnly
             }
             Text {
                 id: lastname
@@ -89,7 +90,6 @@ Item {
                 id: lastnameInput
                 placeholderText: placeholderTxt
                 Layout.alignment: Qt.AlignCenter
-                readOnly: isReadOnly
             }
             Text {
                 id: phone
@@ -101,7 +101,7 @@ Item {
                 id: phoneInput
                 placeholderText: placeholderTxt
                 Layout.alignment: Qt.AlignCenter
-                readOnly: isReadOnly
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
             Text {
                 id: email
@@ -113,7 +113,6 @@ Item {
                 id: emailInput
                 placeholderText: placeholderTxt
                 Layout.alignment: Qt.AlignCenter
-                readOnly: isReadOnly
             }
 
             //            Button {
@@ -160,6 +159,7 @@ Item {
                 height: 50
                 radius: 20.0
                 color: Material.color(Material.Red)
+                visible: isUpdateMode
                 Text {
                     anchors {
                         verticalCenter: parent.verticalCenter
@@ -184,6 +184,7 @@ Item {
                 height: 50
                 radius: 20.0
                 color: Material.color(Material.Orange)
+                visible: isUpdateMode
                 Text {
                     anchors {
                         verticalCenter: parent.verticalCenter
@@ -195,8 +196,8 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        isReadOnly = false
-                        firstnameInput.focus = true
+                        dialogMessage = "Edit " + fullName + "?"
+                        headsupLoader.item.open()
                         console.log("Edit clicked")
                     }
                 }
@@ -219,11 +220,32 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         console.log("Add clicked")
-                        wantToDelete = false
+                        addToDb = true
                         dialogMessage = "Add " + fullName + " into your contacts?"
                         headsupLoader.item.open()
-                        //                        contacts.insertContact(iidee, fullName, phoneInput.text,
-                        //                                               emailInput.text)
+                    }
+                }
+            }
+
+            Rectangle {
+                width: 50
+                height: 50
+                radius: 20.0
+                color: "#42a51c"
+                visible: isCreateMode
+                Text {
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        horizontalCenter: parent.horizontalCenter
+                    }
+                    text: Mdi.icon.mdAdd
+                    color: "white"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        dialogMessage = "Create " + fullName + "?"
+                        headsupLoader.item.open()
                     }
                 }
             }
@@ -234,6 +256,7 @@ Item {
         text: Mdi.icon.iosClose
         font.pixelSize: 20
         highlighted: true
+        Material.accent: Material.color(Material.BlueGrey)
         anchors.margins: 10
         y: parent.height - height - 12
         anchors.right: parent.right
@@ -248,13 +271,19 @@ Item {
             //            message: "Add " + fullName + " into your contacts?"
             message: dialogMessage
             onYes: {
+                if (isCreateMode) {
+                    Api.createContact(firstnameInput.text, lastnameInput.text,
+                                      phoneInput.text, emailInput.text)
+                }
                 if (wantToDelete) {
                     Api.deleteContact(iidee)
                     theDialog.close()
-                } else {
+                }
+                if (addToDb) {
                     contacts.insertContact(iidee, fullName, phoneInput.text,
                                            emailInput.text)
                 }
+
                 console.log("Yippee you accepted!")
             }
         }

@@ -19,6 +19,7 @@ ApplicationWindow {
     property string darkColor: "#242424"
     property string whiteColor: "#fff"
     property string titleName: "Contacts"
+    property bool isSearchMode: false
 
     ContactModel {
         id: contacts
@@ -34,9 +35,35 @@ ApplicationWindow {
         source: "ionicons.ttf"
     }
 
+    //    header: ToolBar {
+    //        RowLayout {
+    //            anchors.fill: parent
+    //            ToolButton {
+    //                font.pixelSize: Qt.application.font.pixelSize * 1.6
+    //                text: Mdi.icon.mdMenu
+    //                onClicked: {
+    //                    drawer.open()
+    //                }
+    //            }
+    //            Label {
+    //                text: titleName
+    //                elide: Label.ElideRight
+    //                horizontalAlignment: Qt.AlignHCenter
+    //                verticalAlignment: Qt.AlignVCenter
+    //                Layout.fillWidth: true
+    //            }
+    //            ToolButton {
+    //                font.pixelSize: Qt.application.font.pixelSize * 1.6
+    //                text: Mdi.icon.iosRefresh
+    //                onClicked: {
+    //                    console.log("blii bloo nyt on kkona")
+    //                }
+    //            }
+    //        }
+    //    }
     header: ToolBar {
         contentHeight: toolBtn.implicitHeight
-        Material.background: Material.color(Material.Lime)
+        Material.background: Material.color(Material.BlueGrey)
         ToolButton {
             id: toolBtn
             font.pixelSize: Qt.application.font.pixelSize * 1.6
@@ -46,12 +73,12 @@ ApplicationWindow {
                 drawer.open()
             }
         }
+
         Label {
             text: titleName
             anchors.centerIn: parent
         }
     }
-
     Drawer {
         id: drawer
         width: appWindow.width * 0.66

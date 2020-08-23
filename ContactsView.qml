@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.2
+import QtQuick.Controls.Material 2.12
 import "ApiHelper.js" as Api
 import "Icons.js" as Mdi
 
@@ -10,6 +11,7 @@ Item {
     id: contactsView
     width: Screen.width
     height: Screen.height
+    property bool showLoadingIndicator: false
 
     ContactModel {
         id: contacts
@@ -33,25 +35,26 @@ Item {
             id: theModel
         }
 
-        //        headerPositioning: ListView.OverlayHeader
-        //        header: Rectangle {
-        //            id: searchRectangle
-        //            color: "#2C2C2C"
-        //            width: Screen.width
-        //            height: 50
-        //            z: 2
-        //            TextField {
-        //                id: searchField
-        //                color: "#fff"
-        //                width: parent.width
-        //                height: parent.height
-        //                padding: 5
-        //                inputMethodHints: Qt.ImhNoPredictiveText
-        //                onTextChanged: {
-        //                    Api.searchContacts(searchField.text)
-        //                }
-        //            }
-        //        }
+        headerPositioning: ListView.OverlayHeader
+        header: Rectangle {
+            id: searchRectangle
+            color: "#2C2C2C"
+            width: Screen.width
+            height: 50
+            z: 2
+            TextField {
+                id: searchField
+                color: "#fff"
+                width: parent.width
+                height: parent.height
+                padding: 5
+                inputMethodHints: Qt.ImhNoPredictiveText
+
+                onTextChanged: {
+                    Api.searchContacts(searchField.text)
+                }
+            }
+        }
         onDragEnded: {
             if (lHeader.refresh) {
                 Api.refreshModel(listView)
@@ -62,10 +65,10 @@ Item {
         }
 
         ListHeader {
+            visible: false
             id: lHeader
             y: -listView.contentY - height
         }
-
         delegate: Loader {
             id: delegateLoader
             sourceComponent: ContactItem {
@@ -74,6 +77,13 @@ Item {
                 contactId: idText
             }
         }
+    }
+
+    LoadingIndicator {
+        //        anchors.fill: parent
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        isRunning: showLoadingIndicator
     }
 
     Component {
@@ -88,19 +98,6 @@ Item {
         }
     }
 
-    //    Loader {
-    //        id: listViewLoader
-    //        sourceComponent: listView
-    //        active: true
-    //        asynchronous: true
-    //        visible: status == Loader.Ready
-    //    }
-    //    BusyIndicator {
-    //        id: ind
-    //        anchors.fill: parent
-    //        width: 150
-    //        height: 150
-    //    }
     Loader {
         id: createContactLoader
         sourceComponent: createComp
@@ -110,6 +107,7 @@ Item {
     RoundButton {
         text: qsTr("+")
         highlighted: true
+        Material.accent: Material.color(Material.BlueGrey)
         anchors.margins: 10
         //        anchors.bottom: contactsView.bottom
         y: parent.height - height - 12

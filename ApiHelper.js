@@ -8,15 +8,23 @@ function fetchContacts(viewId) {
     var req = new XMLHttpRequest()
     try {
         req.open("GET", "https://qtphone.herokuapp.com/contact/", true)
-        req.onload = function () {
-            var objectArray = JSON.parse(req.responseText)
+        req.onprogress = function () {
+            console.log('LOADING', req.readyState) // readyState will be 3
+        }
+        req.onreadystatechange = function () {
+            if (req.readyState === XMLHttpRequest.HEADERS_RECIEVED) {
+                console.log("Headers recieved")
+            } else if (req.readyState === XMLHttpRequest.DONE) {
+                var objectArray = JSON.parse(req.responseText)
 
-            for (var i = 0; i < objectArray.length; i++) {
-                viewId.model.append({
-                                        "idText": objectArray[i].id,
-                                        "contactName": objectArray[i].firstname
-                                        + " " + objectArray[i].lastname
-                                    })
+                for (var i = 0; i < objectArray.length; i++) {
+                    viewId.model.append({
+                                            "idText": objectArray[i].id,
+                                            "contactName": objectArray[i].firstname
+                                            + " " + objectArray[i].lastname
+                                        })
+                }
+                console.log("Done")
             }
         }
         req.send()
@@ -56,24 +64,25 @@ function searchContacts(searchString) {
         }
 
         var req = new XMLHttpRequest()
-        req.open("GET", "https://qtphone.herokuapp.com/contact", true)
-        req.onload = function () {
-            var objectArray = JSON.parse(req.responseText)
-            listView.model.clear()
+        req.onreadystatechange = function () {
+            if (req.readyState === XMLHttpRequest.DONE) {
+                var objectArray = JSON.parse(req.responseText)
+                listView.model.clear()
 
-            for (var i = 0; i < objectArray.length; i++) {
-                if (objectArray[i].firstname.includes(searchString)
-                        || objectArray[i].lastname.includes(searchString)) {
-                    console.log(objectArray[i].firstname)
-                    listView.model.append({
-                                              "idText": objectArray[i].id,
-                                              "contactName": objectArray[i].firstname
-                                              + " " + objectArray[i].lastname
-                                          })
+                for (var i in objectArray) {
+                    if (objectArray[i].firstname.includes(searchString)
+                            || objectArray[i].lastname.includes(searchString)) {
+
+                        listView.model.append({
+                                                  "idText": objectArray[i].id,
+                                                  "contactName": objectArray[i].firstname
+                                                  + " " + objectArray[i].lastname
+                                              })
+                    }
                 }
             }
         }
-
+        req.open("GET", "https://qtphone.herokuapp.com/contact", true)
         req.send()
     } catch (e) {
         console.error(e)
@@ -138,9 +147,9 @@ function deleteContact(id) {
         xhr.open("DELETE", "https://qtphone.herokuapp.com/contact/" + id, true)
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-                print('DELETE HEADERS_RECEIVED')
+                console.log('DELETE HEADERS_RECEIVED')
             } else if (xhr.readyState === XMLHttpRequest.DONE) {
-                print('DELETE DONE')
+                console.log('DELETE DONE')
             }
         }
         xhr.send()
