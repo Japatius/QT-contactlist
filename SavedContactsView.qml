@@ -45,18 +45,9 @@ Item {
             height: savedView.height / 5
             radius: 10
 
-            //            MouseArea {
-            //                anchors.fill: parent
-            //                onClicked: {
-            //                    console.log(hiddenId.text)
-            //                    updateSavedContactLoader.active = false
-            //                    updateSavedContactLoader.active = true
-            //                    updateSavedContactLoader.item.open()
-            //                }
-            //            }
             Text {
                 id: name
-                text: firstName
+                text: firstName + "ID:" + id
                 color: "black"
                 padding: 5
                 font.pixelSize: nameSize
@@ -124,22 +115,4 @@ Item {
             }
         }
     }
-
-    //    Component {
-    //        id: createComp
-    //        Dialog {
-    //            id: theDialog
-    //            visible: false
-    //            contentItem: ContactDialog {
-    //                iidee: aidii
-    //                isUpdateMode: false
-    //            }
-    //        }
-    //    }
-
-    //    Loader {
-    //        id: updateSavedContactLoader
-    //        sourceComponent: createComp
-    //        active: false
-    //    }
 }

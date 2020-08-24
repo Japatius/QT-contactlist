@@ -638,7 +638,7 @@ var icon = {
     "md-sad": "\uf373",
     "md-save": "\uf1a9",
     "md-school": "\uf374",
-    "md-search": "\uf375",
+    "mdSearch": "\uf375",
     "md-send": "\uf376",
     "md-settings": "\uf377",
     "md-share": "\uf379",

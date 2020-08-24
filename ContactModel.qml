@@ -3,6 +3,10 @@ import QtQuick.LocalStorage 2.12
 
 Item {
     property variant model: contacts
+    property string dbName: "ContactsDB"
+    property string version: "1.0"
+    property string description: "Database for contacts"
+    property real limit: 1000000
 
     ListModel {
         id: contacts
@@ -10,8 +14,8 @@ Item {
 
     function initDb() {
         try {
-            return LocalStorage.openDatabaseSync("ContactsDatabase", "1.0",
-                                                 "Contact DB", 1000000)
+            return LocalStorage.openDatabaseSync(dbName, version,
+                                                 description, limit)
         } catch (e) {
             console.error(e)
         }
@@ -21,21 +25,9 @@ Item {
         var db = initDb()
         try {
             db.transaction(function (trx) {
-                trx.executeSql(
-                            'CREATE TABLE IF NOT EXISTS Contacts(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, email TEXT)')
-
-                //                trx.executeSql(
-                //                            'INSERT INTO Contacts VALUES(?,?,?,?)',
-                //                            ["", "Test Name", "040123123", "initdata@test.com"])
-                //                var rs = trx.executeSql('SELECT * FROM Contacts')
-
-                //                var r = ""
-                //                for (var i = 0; i < rs.rows.length; i++) {
-                //                    r += rs.rows.item(i).id + ", " + rs.rows.item(
-                //                                i).name + ", " + rs.rows.item(
-                //                                i).phone + ", " + rs.rows.item(i).email + "\n"
-                //                }
-                //                console.log(r)
+                var sql = 'CREATE TABLE IF NOT EXISTS Contacts(id INTEGER PRIMARY KEY AUTOINCREMENT, firstname TEXT, lastname TEXT, phone TEXT, email TEXT)'
+                trx.executeSql(sql)
+                console.log("TABLE CREATED")
             })
         } catch (e) {
             console.error(e)
@@ -54,20 +46,33 @@ Item {
         }
     }
 
-    function listContacts(viewId) {
+    function dropContacts() {
+        var db = initDb()
+        try {
+            db.transaction(function (trx) {
+                trx.executeSql('DROP TABLE Contacts')
+            })
+            console.log("kontaktipöytä poistettu")
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    function listContacts(viewModel) {
         var db = initDb()
         try {
             db.transaction(function (trx) {
                 var select = trx.executeSql('SELECT * FROM Contacts')
                 for (var i = 0; i < select.rows.length; i++) {
-                    viewId.model.append({
-                                            "id": select.rows.item(i).id,
-                                            "firstName": select.rows.item(
-                                                             i).name,
-                                            "phoneNumber": select.rows.item(
-                                                               i).phone,
-                                            "email": select.rows.item(i).email
-                                        })
+                    viewModel.append({
+                                         "id": select.rows.item(i).id,
+                                         "firstname": select.rows.item(
+                                                          i).firstname,
+                                         "lastname": select.rows.item(
+                                                         i).lastname,
+                                         "phone": select.rows.item(i).phone,
+                                         "email": select.rows.item(i).email
+                                     })
                 }
             })
         } catch (e) {
@@ -99,14 +104,15 @@ Item {
     //            console.error(e)
     //        }
     //    }
-    function insertContact(id, name, phone, email) {
+    function insertContact(name, phone, email) {
         var db = initDb()
         try {
             db.transaction(function (trx) {
-                trx.executeSql('INSERT INTO Contacts VALUES(?,?,?,?)',
-                               [id, name, phone, email])
+                //                var sql = 'INSERT INTO Contacts(name, phone, email) VALUES(?,?,?)'
+                trx.executeSql(
+                            'INSERT INTO Contacts(name, phone, email) VALUES(?,?,?)',
+                            [name, phone, email])
                 var tp = trx.executeSql('SELECT * FROM Contacts')
-                console.log(tp.rows)
             })
         } catch (e) {
             console.error(e)
@@ -130,7 +136,7 @@ Item {
         var db = initDb()
         try {
             db.transaction(function (trx) {
-                trx.executeSql('DELETE FROM Contacts WHERE id=?', [id])
+                trx.executeSql('DELETE FROM Contac ts WHERE id=?', [id])
             })
             console.log("Deleted: ", id)
         } catch (e) {

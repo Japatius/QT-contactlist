@@ -3,8 +3,8 @@
  * This file contains all the functions that have something to do with REST API
 **/
 
-// get all contacts and append into model
-function fetchContacts(viewId) {
+// get all contacts, sort alphabetically and append into model
+function fetchContacts(viewModel) {
     var req = new XMLHttpRequest()
     try {
         req.open("GET", "https://qtphone.herokuapp.com/contact/", true)
@@ -17,12 +17,25 @@ function fetchContacts(viewId) {
             } else if (req.readyState === XMLHttpRequest.DONE) {
                 var objectArray = JSON.parse(req.responseText)
 
-                for (var i = 0; i < objectArray.length; i++) {
-                    viewId.model.append({
-                                            "idText": objectArray[i].id,
-                                            "contactName": objectArray[i].firstname
-                                            + " " + objectArray[i].lastname
-                                        })
+                var sorted = objectArray.sort(function (a, b) {
+                    if (a.firstname < b.firstname) {
+                        return -1
+                    }
+                    if (a.firstname > b.firstname) {
+                        return 1
+                    }
+
+                    return 0
+                })
+
+                for (var i in sorted) {
+                    viewModel.append({
+                                         "idText": objectArray[i].id,
+                                         "contactName": objectArray[i].firstname
+                                         + " " + objectArray[i].lastname,
+                                         "phone": objectArray[i].mobile,
+                                         "email": objectArray[i].email
+                                     })
                 }
                 console.log("Done")
             }
@@ -34,10 +47,10 @@ function fetchContacts(viewId) {
 }
 
 // refresh contacts
-function refreshModel(viewId) {
-    viewId.model.clear()
-    fetchContacts(viewId)
-    console.log(viewId.count)
+function refreshModel(viewModel) {
+    viewModel.clear()
+    fetchContacts(viewModel)
+    console.log(viewModel.count)
 }
 
 // get contact by id
@@ -67,17 +80,17 @@ function searchContacts(searchString) {
         req.onreadystatechange = function () {
             if (req.readyState === XMLHttpRequest.DONE) {
                 var objectArray = JSON.parse(req.responseText)
-                listView.model.clear()
+                theModel.clear()
 
                 for (var i in objectArray) {
                     if (objectArray[i].firstname.includes(searchString)
                             || objectArray[i].lastname.includes(searchString)) {
 
-                        listView.model.append({
-                                                  "idText": objectArray[i].id,
-                                                  "contactName": objectArray[i].firstname
-                                                  + " " + objectArray[i].lastname
-                                              })
+                        theModel.append({
+                                            "idText": objectArray[i].id,
+                                            "contactName": objectArray[i].firstname
+                                            + " " + objectArray[i].lastname
+                                        })
                     }
                 }
             }

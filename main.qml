@@ -25,9 +25,20 @@ ApplicationWindow {
         id: contacts
     }
 
+    ListModel {
+        id: theModel
+    }
+
+    ListModel {
+        id: dbModel
+    }
+
     Component.onCompleted: {
         contacts.initDb()
+        contacts.initTable()
         console.log(Screen.width, Screen.height)
+        Api.fetchContacts(theModel)
+        console.log("Cur index: ", modelChooser.currentIndex)
     }
 
     FontLoader {
@@ -35,50 +46,149 @@ ApplicationWindow {
         source: "ionicons.ttf"
     }
 
-    //    header: ToolBar {
-    //        RowLayout {
-    //            anchors.fill: parent
-    //            ToolButton {
-    //                font.pixelSize: Qt.application.font.pixelSize * 1.6
-    //                text: Mdi.icon.mdMenu
-    //                onClicked: {
-    //                    drawer.open()
-    //                }
-    //            }
-    //            Label {
-    //                text: titleName
-    //                elide: Label.ElideRight
-    //                horizontalAlignment: Qt.AlignHCenter
-    //                verticalAlignment: Qt.AlignVCenter
-    //                Layout.fillWidth: true
-    //            }
-    //            ToolButton {
-    //                font.pixelSize: Qt.application.font.pixelSize * 1.6
-    //                text: Mdi.icon.iosRefresh
-    //                onClicked: {
-    //                    console.log("blii bloo nyt on kkona")
-    //                }
-    //            }
-    //        }
-    //    }
     header: ToolBar {
         contentHeight: toolBtn.implicitHeight
         Material.background: Material.color(Material.BlueGrey)
-        ToolButton {
-            id: toolBtn
-            font.pixelSize: Qt.application.font.pixelSize * 1.6
-            font.family: "Ionicons"
-            text: Mdi.icon.mdMenu
-            onClicked: {
-                drawer.open()
+        RowLayout {
+            anchors.fill: parent
+            ToolButton {
+                id: toolBtn
+                font.pixelSize: Qt.application.font.pixelSize * 1.6
+                text: Mdi.icon.mdMenu
+                onClicked: {
+                    drawer.open()
+                }
+            }
+
+            ComboBox {
+                id: modelChooser
+                //                anchors {
+                //                    horizontalCenter: parent.
+                //                    verticalCenter: Qt.AlignVCenter
+                //                }
+                model: ListModel {
+                    ListElement {
+                        text: "Contacts"
+                    }
+                    ListElement {
+                        text: "My Contacts"
+                    }
+                }
+
+                onCurrentTextChanged: {
+                    console.log(modelChooser.currentIndex)
+                }
+            }
+            Material.background: Material.color(Material.BlueGrey)
+            width: 200
+            Layout.fillWidth: true
+
+            //            Label {
+            //                text: titleName
+            //                elide: Label.ElideRight
+            //                horizontalAlignment: Qt.AlignHCenter
+            //                verticalAlignment: Qt.AlignVCenter
+            //                Layout.fillWidth: true
+            //            }
+            ToolButton {
+                font.pixelSize: Qt.application.font.pixelSize * 1.6
+                text: Mdi.icon.mdSearch
+                onClicked: {
+                    contacts.dropContacts()
+                    console.log("blii bloo nyt on kkona")
+                }
             }
         }
+    }
 
-        Label {
-            text: titleName
-            anchors.centerIn: parent
+    ListView {
+        id: listView
+        anchors.fill: parent
+        spacing: 5
+        width: parent.width
+        height: parent.height
+        header: Rectangle {
+            id: searchRectangle
+            color: "#2C2C2C"
+            width: Screen.width
+            height: 50
+            z: 2
+            TextField {
+                id: searchField
+                color: "#fff"
+                width: parent.width
+                height: parent.height
+                padding: 5
+                inputMethodHints: Qt.ImhNoPredictiveText
+
+                onTextChanged: {
+                    Api.searchContacts(searchField.text)
+                }
+            }
+        }
+        onDragEnded: {
+            if (lHeader.refresh) {
+                Api.refreshModel(theModel)
+            }
+        }
+        onDragStarted: {
+            console.log(listView.contentY)
+        }
+
+        ListHeader {
+            visible: false
+            id: lHeader
+            y: -listView.contentY - height
+        }
+        model: modelChooser.currentIndex <= 0 ? theModel : dbModel
+
+        delegate: ContactItem {
+            firstname: contactName
+            contactId: idText
+        }
+
+        //        delegate: Loader {
+        //            id: delegateLoader
+        //            sourceComponent: ContactItem {
+        //                firstname: contactName
+        //                contactId: idText
+        //            }
+        //        }
+        section.property: "contactName"
+        section.criteria: ViewSection.FirstCharacter
+        section.delegate: Initial {}
+    }
+
+    Component {
+        id: createComp
+        Dialog {
+            id: theDialog
+            visible: false
+            contentItem: ContactDialog {}
         }
     }
+
+    Loader {
+        id: createContactLoader
+        sourceComponent: createComp
+        active: false
+    }
+
+    RoundButton {
+        text: qsTr("+")
+        highlighted: true
+        Material.accent: Material.color(Material.BlueGrey)
+        anchors.margins: 10
+        //        anchors.bottom: contactsView.bottom
+        y: parent.height - height - 12
+        anchors.right: parent.right
+        onClicked: {
+            createContactLoader.active = false
+            createContactLoader.active = true
+            createContactLoader.item.open()
+        }
+    }
+
     Drawer {
         id: drawer
         width: appWindow.width * 0.66
@@ -118,20 +228,19 @@ ApplicationWindow {
         }
     }
 
-    Item {
-        id: contactPos
-        Loader {
-            id: viewLoader
-            anchors.fill: parent
-            source: "ContactsView.qml"
-            asynchronous: true
-            visible: status == Loader.Ready
-        }
-    }
-
+    //    Item {
+    //        id: contactPos
+    //        Loader {
+    //            id: viewLoader
+    //            anchors.fill: parent
+    //            source: "ContactsView.qml"
+    //            asynchronous: true
+    //            visible: status == Loader.Ready
+    //        }
+    //    }
     StackView {
         id: stack
-        initialItem: contactPos
+        initialItem: listView
         anchors.fill: parent
 
         pushEnter: Transition {

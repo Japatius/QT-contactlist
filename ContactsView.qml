@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import QtQml.Models 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
@@ -22,7 +23,6 @@ Item {
 
     Component.onCompleted: {
         Api.fetchContacts(listView)
-        //        contacts.fetchContacts(listView)
     }
 
     ListView {
@@ -31,11 +31,6 @@ Item {
         spacing: 5
         width: parent.width
         height: parent.height
-        model: ListModel {
-            id: theModel
-        }
-
-        headerPositioning: ListView.OverlayHeader
         header: Rectangle {
             id: searchRectangle
             color: "#2C2C2C"
@@ -62,6 +57,11 @@ Item {
         }
         onDragStarted: {
             console.log(listView.contentY)
+            for (var i = 0; i < theModel.count; i++) {
+                console.log(i)
+            }
+
+            console.log("items in model: ")
         }
 
         ListHeader {
@@ -69,14 +69,25 @@ Item {
             id: lHeader
             y: -listView.contentY - height
         }
-        delegate: Loader {
-            id: delegateLoader
-            sourceComponent: ContactItem {
-                firstname: contactName
-                heightOfParent: contactsView.height / 10
-                contactId: idText
-            }
+        model: ListModel {
+            id: theModel
         }
+
+        delegate: ContactItem {
+            firstname: contactName
+            contactId: idText
+        }
+
+        //        delegate: Loader {
+        //            id: delegateLoader
+        //            sourceComponent: ContactItem {
+        //                firstname: contactName
+        //                contactId: idText
+        //            }
+        //        }
+        section.property: "contactName"
+        section.criteria: ViewSection.FirstCharacter
+        section.delegate: Initial {}
     }
 
     LoadingIndicator {
@@ -91,10 +102,7 @@ Item {
         Dialog {
             id: theDialog
             visible: false
-            contentItem: ContactDialog {
-                isUpdateMode: false
-                isCreateMode: true
-            }
+            contentItem: ContactDialog {}
         }
     }
 
