@@ -1,2 +1,2 @@
 # QT-contactlist
-Repository for QT android application project
+Contactlist that contains CRUD functions for remote API, and local SQLITE database.
