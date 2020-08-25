@@ -4,16 +4,16 @@
         <file>qtquickcontrols2.conf</file>
         <file>ContactItem.qml</file>
         <file>ApiHelper.js</file>
-        <file>MyContacts.qml</file>
         <file>ContactDialog.qml</file>
-        <file>CreateContactDialog.qml</file>
-        <file>SavedContact.qml</file>
-        <file>ContactsView.qml</file>
-        <file>Icons.js</file>
         <file>ionicons.ttf</file>
         <file>IonIcon.qml</file>
         <file>ListHeader.qml</file>
         <file>ContactModel.qml</file>
-        <file>SavedContactsView.qml</file>
+        <file>HeadsUpDialog.qml</file>
+        <file>LoadingIndicator.qml</file>
+        <file>SearchField.qml</file>
+        <file>Initial.qml</file>
+        <file>EditContactDialog.qml</file>
+        <file>Res.js</file>
     </qresource>
 </RCC>

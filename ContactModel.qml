@@ -1,18 +1,18 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.LocalStorage 2.12
+import "Res.js" as Resource
 
 Item {
-    property variant model: contacts
-
     ListModel {
         id: contacts
     }
 
     function initDb() {
         try {
-            console.log("Database initialized")
-            return LocalStorage.openDatabaseSync("ContactsDatabase", "1.0",
-                                                 "Contact DB", 1000000)
+            return LocalStorage.openDatabaseSync(Resource.database.name,
+                                                 Resource.database.version,
+                                                 Resource.database.description,
+                                                 Resource.database.limit)
         } catch (e) {
             console.error(e)
         }
@@ -22,21 +22,8 @@ Item {
         var db = initDb()
         try {
             db.transaction(function (trx) {
-                trx.executeSql(
-                            'CREATE TABLE IF NOT EXISTS Contacts(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, email TEXT)')
-                //                trx.executeSql(
-                //                            'INSERT INTO Contacts VALUES(?,?,?,?)',
-                //                            ["", "Test Name", "040123123", "initdata@test.com"])
-
-                //                var rs = trx.executeSql('SELECT * FROM Contacts')
-
-                //                var r = ""
-                //                for (var i = 0; i < rs.rows.length; i++) {
-                //                    r += rs.rows.item(i).id + ", " + rs.rows.item(
-                //                                i).name + ", " + rs.rows.item(
-                //                                i).phone + ", " + rs.rows.item(i).email + "\n"
-                //                }
-                //                console.log(r)
+                var sql = 'CREATE TABLE IF NOT EXISTS Contacts(id INTEGER PRIMARY KEY AUTOINCREMENT, firstname TEXT, lastname TEXT, phone TEXT, email TEXT)'
+                trx.executeSql(sql)
             })
         } catch (e) {
             console.error(e)
@@ -49,27 +36,37 @@ Item {
             db.transaction(function (trx) {
                 trx.executeSql('DELETE FROM Contacts')
             })
-            console.log("erased contacts")
         } catch (e) {
             console.error(e)
         }
     }
 
-    function listContacts(viewId) {
+    function dropContacts() {
+        var db = initDb()
+        try {
+            db.transaction(function (trx) {
+                trx.executeSql('DROP TABLE Contacts')
+            })
+            refreshSavedContacts(dbModel)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    function listContacts(viewModel) {
         var db = initDb()
         try {
             db.transaction(function (trx) {
                 var select = trx.executeSql('SELECT * FROM Contacts')
                 for (var i = 0; i < select.rows.length; i++) {
-                    viewId.model.append({
-                                            "id": select.rows.item(i).id,
-                                            "firstName": select.rows.item(
-                                                             i).name,
-                                            "phoneNumber": select.rows.item(
-                                                               i).phone,
-                                            "email": select.rows.item(i).email
-                                        })
-                    console.log(select.rows.id)
+                    viewModel.append({
+                                         "idText": select.rows.item(i).id,
+                                         "contactName": select.rows.item(
+                                                            i).firstname + " " + select.rows.item(
+                                                            i).lastname,
+                                         "phone": select.rows.item(i).phone,
+                                         "email": select.rows.item(i).email
+                                     })
                 }
             })
         } catch (e) {
@@ -78,49 +75,57 @@ Item {
     }
 
     function refreshSavedContacts(viewId) {
-        viewId.model.clear()
+        viewId.clear()
         listContacts(viewId)
     }
 
-    function fetchOne(id) {
-        var db = initDb()
-        try {
-            db.transaction(function (trx) {
-                //                trx.executeSql('SELECT * from Contacts WHERE id=?', [id])
-                var res = trx.executeSql(
-                            'SELECT * from Contacts WHERE id is $1', [id])
-                console.log(res.name)
-            })
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    function insertContact(id, name, phone, email) {
-        var db = initDb()
-        try {
-            db.transaction(function (trx) {
-                trx.executeSql('INSERT INTO Contacts VALUES(?,?,?,?)',
-                               [id, name, phone, email])
-                var tp = trx.executeSql('SELECT * FROM Contacts')
-                console.log(tp.rows)
-            })
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    function updateContact(name, phone, email, id) {
+    function insertContact(firstname, lastname, phone, email) {
         var db = initDb()
         try {
             db.transaction(function (trx) {
                 trx.executeSql(
-                            'UPDATE Contacts SET name=?, SET phone=?, SET email=? WHERE id=?',
-                            [name, phone, email, id])
+                            'INSERT INTO Contacts(firstname, lastname, phone, email) VALUES(?,?,?,?)',
+                            [firstname, lastname, phone, email])
+                var tp = trx.executeSql('SELECT * FROM Contacts')
             })
+            refreshSavedContacts(dbModel)
         } catch (e) {
             console.error(e)
         }
+    }
+
+    function updateContact(id, firstname, lastname, mobile, email) {
+        var db = initDb()
+        try {
+            db.transaction(function (trx) {
+                trx.executeSql(
+                            'UPDATE Contacts SET firstname=?, lastname=?, phone=?, email=? WHERE id=?',
+                            [firstname, lastname, mobile, email, id])
+            })
+            //            refreshSavedContacts(dbModel)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    function searchContacts(searchString) {
+        var db = initDb()
+        dbModel.clear()
+
+        db.transaction(function (trx) {
+
+            var res = trx.executeSql(
+                        'SELECT * from Contacts WHERE firstname LIKE ? OR lastname LIKE ?',
+                        [searchString, searchString])
+            for (var i = 0; i < res.rows.length; i++) {
+                dbModel.append({
+                                   "idText": res.rows.item(i).id,
+                                   "contactName": res.rows.item(
+                                                      i).firstname + " " + res.rows.item(
+                                                      i).lastname
+                               })
+            }
+        })
     }
 
     function deleteContact(id) {
@@ -130,6 +135,7 @@ Item {
                 trx.executeSql('DELETE FROM Contacts WHERE id=?', [id])
             })
             console.log("Deleted: ", id)
+            refreshSavedContacts(dbModel)
         } catch (e) {
             console.error(e)
         }

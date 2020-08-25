@@ -1,4 +1,40 @@
-var icon = {
+// Resourcefile for colors, icons, placeholders etc..
+const appName = "ContactBook"
+const colors = {
+    "white": "#fff",
+    "green": "#42a51c",
+    "darkGray": "#2C2C2C"
+}
+
+const user = {
+    "firstName": "Firstname",
+    "lastName": "Lastname",
+    "email": "Email",
+    "mobile": "Mobile"
+}
+
+const actions = {
+    "create": "CREATE CONTACT",
+    "apply": "Apply",
+    "close": "Close",
+    "addToMyContact": "Add to my Contacts",
+    "editing": "Editing",
+    "wipeDatabase": "Wipe database"
+}
+
+const placeholders = {
+    "enter": "<ENTER>",
+    "search": "Search"
+}
+
+const database = {
+    "name": "ContactsDB",
+    "version": "1.0",
+    "description": "Database for contacts",
+    "limit": 1000000
+}
+
+const icons = {
     "ios-add": "\uf102",
     "ios-add-circle": "\uf101",
     "ios-add-circle-outline": "\uf100",
@@ -77,9 +113,9 @@ var icon = {
     "ios-checkmark-circle-outline": "\uf149",
     "ios-clipboard": "\uf14c",
     "ios-clock": "\uf403",
-    "ios-close": "\uf406",
-    "ios-close-circle": "\uf14e",
-    "ios-close-circle-outline": "\uf14d",
+    "iosClose": "\uf406",
+    "iosCloseCircle": "\uf14e",
+    "iosCloseCircleOutline": "\uf14d",
     "ios-cloud": "\uf40c",
     "ios-cloud-circle": "\uf152",
     "ios-cloud-done": "\uf154",
@@ -103,7 +139,7 @@ var icon = {
     "ios-contract": "\uf162",
     "ios-contrast": "\uf163",
     "ios-copy": "\uf41c",
-    "ios-create": "\uf165",
+    "iosCreate": "\uf165",
     "ios-crop": "\uf41e",
     "ios-cube": "\uf168",
     "ios-cut": "\uf16a",
@@ -240,8 +276,8 @@ var icon = {
     "ios-rainy": "\uf495",
     "ios-recording": "\uf497",
     "ios-redo": "\uf499",
-    "ios-refresh": "\uf49c",
-    "ios-refresh-circle": "\uf135",
+    "iosRefresh": "\uf49c",
+    "iosRefreshCircle": "\uf135",
     "ios-remove": "\uf1fc",
     "ios-remove-circle": "\uf1fb",
     "ios-remove-circle-outline": "\uf1fa",
@@ -378,7 +414,7 @@ var icon = {
     "logo-yahoo": "\uf34d",
     "logo-yen": "\uf34e",
     "logo-youtube": "\uf34f",
-    "md-add": "\uf273",
+    "mdAdd": "\uf273",
     "md-add-circle": "\uf272",
     "md-add-circle-outline": "\uf158",
     "md-airplane": "\uf15a",
@@ -638,7 +674,7 @@ var icon = {
     "md-sad": "\uf373",
     "md-save": "\uf1a9",
     "md-school": "\uf374",
-    "md-search": "\uf375",
+    "mdSearch": "\uf375",
     "md-send": "\uf376",
     "md-settings": "\uf377",
     "md-share": "\uf379",

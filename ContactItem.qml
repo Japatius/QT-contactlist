@@ -1,98 +1,115 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
 import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.12
 import "ApiHelper.js" as Api
+import "Res.js" as Resource
 
 Item {
     property alias contactId: hiddenId.text
-    property alias firstname: name.text
-    property alias phone: phoneNumber.text
-    property alias heightOfParent: contactItem.height
+    property alias fullName: name.text
     property real itemHeight: 100
-    property string fontColor: "#fff"
 
     id: contactItem
-    height: heightOfParent
+    height: 80
     width: Screen.width
 
+    FontLoader {
+        id: fontLoader
+        source: "ionicons.ttf"
+    }
+
     Loader {
-        id: dialogLoader
-        active: false
-        sourceComponent: dialogComponent
+        id: deleteDialogLoader
+        sourceComponent: HeadsUpDialog {
+            message: "Do you wish to delete " + fullName + "?"
+            onYes: {
+                if (modelChooser.currentIndex <= 0) {
+                    Api.deleteContact(contactId)
+                    Api.refreshModel(listView)
+                } else {
+                    contacts.deleteContact(contactId)
+                }
+            }
+        }
+    }
+
+    Loader {
+        id: editContactLoader
+        sourceComponent: editDialogComponent
     }
 
     Component {
-        id: dialogComponent
+        id: editDialogComponent
         Dialog {
-            id: theDialog
+            id: editDialog
             visible: false
-            contentItem: ContactDialog {
-                iidee: contactId
+            contentItem: EditContactDialog {
+                idContact: contactId
             }
         }
     }
 
-    Rectangle {
-        height: parent.height
-        width: parent.width
-        color: "#2C2C2C"
+    Text {
+        id: hiddenId
+        visible: false
+        text: contactId
+    }
+
+    RowLayout {
+        anchors.fill: parent
+        Label {
+            id: name
+            text: fullName
+            elide: Label.ElideRight
+            horizontalAlignment: Qt.AlignHCenter
+            verticalAlignment: Qt.AlignVCenter
+            Layout.fillWidth: true
+        }
+
         Rectangle {
-            id: letCont
-            height: 40
-            width: 40
-            radius: 50
+            width: 30
+            height: 30
+            radius: 10.0
+            color: Material.color(Material.Orange)
             Text {
-                text: firstname.charAt(0)
                 anchors {
-                    horizontalCenter: parent.horizontalCenter
                     verticalCenter: parent.verticalCenter
+                    horizontalCenter: parent.horizontalCenter
+                }
+
+                text: Resource.icons.iosCreate
+                color: Resource.colors.white
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    editContactLoader.item.open()
                 }
             }
-            anchors {
-                left: parent.left
-                verticalCenter: parent.verticalCenter
-                leftMargin: 20
+        }
+
+        Rectangle {
+            width: 30
+            height: 30
+            radius: 10.0
+            color: Material.color(Material.Red)
+            Text {
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    horizontalCenter: parent.horizontalCenter
+                }
+
+                text: Resource.icons.mdTrash
+                color: Resource.colors.white
             }
-        }
-
-        Text {
-            id: hiddenId
-            visible: false
-            text: contactId
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                console.log(contactId)
-                dialogLoader.active = false
-                dialogLoader.active = true
-                dialogLoader.item.open()
-            }
-        }
-
-        Text {
-            id: name
-            text: firstname
-            color: fontColor
-            leftPadding: 5
-            topPadding: 5
-            anchors {
-                left: letCont.right
-                leftMargin: 10
-            }
-        }
-
-        Text {
-            id: phoneNumber
-            text: phone
-            color: fontColor
-            leftPadding: 5
-            anchors {
-                top: name.bottom
-                left: letCont.right
-                leftMargin: 10
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    deleteDialogLoader.item.open()
+                }
             }
         }
     }
