@@ -5,13 +5,13 @@ import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.12
 import "ApiHelper.js" as Api
-import "Icons.js" as Mdi
+import "Res.js" as Resource
 
 Item {
     property alias contactId: hiddenId.text
-    property alias firstname: name.text
+    property alias fullName: name.text
     property real itemHeight: 100
-    property string fontColor: "#fff"
+
     id: contactItem
     height: 80
     width: Screen.width
@@ -24,10 +24,14 @@ Item {
     Loader {
         id: deleteDialogLoader
         sourceComponent: HeadsUpDialog {
-            message: "Do you wish to delete " + firstname + "?"
+            message: "Do you wish to delete " + fullName + "?"
             onYes: {
-                Api.deleteContact(contactId)
-                Api.refreshModel(listView)
+                if (modelChooser.currentIndex <= 0) {
+                    Api.deleteContact(contactId)
+                    Api.refreshModel(listView)
+                } else {
+                    contacts.deleteContact(contactId)
+                }
             }
         }
     }
@@ -58,7 +62,7 @@ Item {
         anchors.fill: parent
         Label {
             id: name
-            text: firstname
+            text: fullName
             elide: Label.ElideRight
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
@@ -76,8 +80,8 @@ Item {
                     horizontalCenter: parent.horizontalCenter
                 }
 
-                text: Mdi.icon.iosPersonAdd
-                color: "white"
+                text: Resource.icons.iosCreate
+                color: Resource.colors.white
             }
             MouseArea {
                 anchors.fill: parent
@@ -98,8 +102,8 @@ Item {
                     horizontalCenter: parent.horizontalCenter
                 }
 
-                text: Mdi.icon.mdTrash
-                color: "white"
+                text: Resource.icons.mdTrash
+                color: Resource.colors.white
             }
             MouseArea {
                 anchors.fill: parent

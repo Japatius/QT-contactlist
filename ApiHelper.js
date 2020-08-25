@@ -12,9 +12,7 @@ function fetchContacts(viewModel) {
             console.log('LOADING', req.readyState) // readyState will be 3
         }
         req.onreadystatechange = function () {
-            if (req.readyState === XMLHttpRequest.HEADERS_RECIEVED) {
-                console.log("Headers recieved")
-            } else if (req.readyState === XMLHttpRequest.DONE) {
+            if (req.readyState === XMLHttpRequest.DONE) {
                 var objectArray = JSON.parse(req.responseText)
 
                 var sorted = objectArray.sort(function (a, b) {
@@ -37,8 +35,8 @@ function fetchContacts(viewModel) {
                                          "email": objectArray[i].email
                                      })
                 }
-                console.log("Done")
             }
+            appWindow.loadingRequest = false
         }
         req.send()
     } catch (e) {
@@ -53,53 +51,40 @@ function refreshModel(viewModel) {
     console.log(viewModel.count)
 }
 
-// get contact by id
-function fetchContactById(id) {
-    var req = new XMLHttpRequest()
-    req.open("GET", "https://qtphone.herokuapp.com/contact/" + id, true)
-    req.onload = function () {
-        var objectArray = JSON.parse(req.responseText)
-        for (var i = 0; i < objectArray.length; i++) {
-
-            console.log("with id: ", objectArray[i].id,
-                        objectArray[i].firstname)
-        }
-    }
-    req.send()
-}
-
 // search contacts from API
 function searchContacts(searchString) {
-    try {
+    var req = new XMLHttpRequest()
+    req.onreadystatechange = function () {
+        if (req.readyState === XMLHttpRequest.DONE) {
+            var objectArray = JSON.parse(req.responseText)
+            theModel.clear()
 
-        if (!searchString) {
-            return
-        }
+            var sorted = objectArray.sort(function (a, b) {
+                if (a.firstname < b.firstname) {
+                    return -1
+                }
+                if (a.firstname > b.firstname) {
+                    return 1
+                }
 
-        var req = new XMLHttpRequest()
-        req.onreadystatechange = function () {
-            if (req.readyState === XMLHttpRequest.DONE) {
-                var objectArray = JSON.parse(req.responseText)
-                theModel.clear()
+                return 0
+            })
 
-                for (var i in objectArray) {
-                    if (objectArray[i].firstname.includes(searchString)
-                            || objectArray[i].lastname.includes(searchString)) {
+            for (var i in sorted) {
+                if (sorted[i].firstname.includes(searchString)
+                        || sorted[i].lastname.includes(searchString)) {
 
-                        theModel.append({
-                                            "idText": objectArray[i].id,
-                                            "contactName": objectArray[i].firstname
-                                            + " " + objectArray[i].lastname
-                                        })
-                    }
+                    theModel.append({
+                                        "idText": objectArray[i].id,
+                                        "contactName": objectArray[i].firstname
+                                        + " " + objectArray[i].lastname
+                                    })
                 }
             }
         }
-        req.open("GET", "https://qtphone.herokuapp.com/contact", true)
-        req.send()
-    } catch (e) {
-        console.error(e)
     }
+    req.open("GET", "https://qtphone.herokuapp.com/contact")
+    req.send()
 }
 
 // create new contact
@@ -117,7 +102,7 @@ function createContact(firstname, lastname, email, phone) {
         req.setRequestHeader('Content-type', 'application/json; charset=utf-8')
         req.onload = function () {
             var contacts = JSON.parse(req.responseText)
-            if (req.readyState === 4 && req.status === "201") {
+            if (req.readyState === XMLHttpRequest.DONE) {
                 console.log("201", contacts)
             }
         }
@@ -135,19 +120,17 @@ function updateContact(id, firstName, lastName, mobile, email) {
     data.mobile = mobile
     data.email = email
     var json = JSON.stringify(data)
-    var xhr = new XMLHttpRequest()
+    var req = new XMLHttpRequest()
     try {
-        xhr.open("PUT", "https://qtphone.herokuapp.com/contact/" + id, true)
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
-        xhr.onload = function () {
-            var users = JSON.parse(xhr.responseText)
-            if (xhr.readyState === 4 && xhr.status === "200") {
+        req.open("PUT", "https://qtphone.herokuapp.com/contact/" + id, true)
+        req.setRequestHeader('Content-type', 'application/json; charset=utf-8')
+        req.onload = function () {
+            var users = JSON.parse(req.responseText)
+            if (req.readyState === XMLHttpRequest.DONE) {
                 console.log(users)
-            } else {
-                console.error(users)
             }
         }
-        xhr.send(json)
+        req.send(json)
     } catch (e) {
         console.error(e)
     }
@@ -155,17 +138,11 @@ function updateContact(id, firstName, lastName, mobile, email) {
 
 // delete contact
 function deleteContact(id) {
-    var xhr = new XMLHttpRequest()
+    var req = new XMLHttpRequest()
     try {
-        xhr.open("DELETE", "https://qtphone.herokuapp.com/contact/" + id, true)
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-                console.log('DELETE HEADERS_RECEIVED')
-            } else if (xhr.readyState === XMLHttpRequest.DONE) {
-                console.log('DELETE DONE')
-            }
-        }
-        xhr.send()
+        req.open("DELETE", "https://qtphone.herokuapp.com/contact/" + id, true)
+        req.send()
+        refreshModel(theModel)
     } catch (e) {
         console.error(e)
     }

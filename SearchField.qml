@@ -3,19 +3,35 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 import "ApiHelper.js" as Api
+import "Res.js" as Resource
 
-Row {
+Rectangle {
     height: 50
     width: parent.width
-    spacing: 10
+    color: Resource.colors.darkGray
+    z: 100
+
+    ContactModel {
+        id: contacts
+    }
 
     TextField {
         id: searchField
-        anchors.fill: parent
-        placeholderText: qsTr("Search")
+        Material.accent: Material.color(Material.BlueGrey)
+        width: parent.width - 20
+        placeholderText: Resource.placeholders.search
+        color: Resource.colors.white
         inputMethodHints: Qt.ImhNoPredictiveText
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            verticalCenter: parent.verticalCenter
+        }
         onTextChanged: {
-            Api.searchContacts(searchField.text)
+            if (modelChooser.currentIndex <= 0) {
+                Api.searchContacts(searchField.text)
+            } else {
+                contacts.searchContacts(searchField.text)
+            }
         }
     }
 }

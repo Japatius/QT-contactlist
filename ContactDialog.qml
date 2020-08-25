@@ -1,22 +1,16 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.12
 import QtQuick.LocalStorage 2.12
 import QtQuick.Window 2.12
 import "ApiHelper.js" as Api
-import "Icons.js" as Mdi
+import "Res.js" as Resource
 
 Item {
     width: 400
     height: 600
-    //    property alias iidee: hidden.text
-    property string updateTxt: "Update"
-    property string addTxt: "Add"
     property string fullName: firstnameInput.text + " " + lastnameInput.text
-    property string prevName: ""
-    property string dialogMessage
-    property string placeholderTxt: "<enter>"
 
     ContactModel {
         id: contacts
@@ -26,7 +20,7 @@ Item {
         id: infoRectangle
         width: parent.width
         height: parent.height - 100
-        color: "#2C2C2C"
+        color: Resource.colors.darkGray
 
         GridLayout {
             id: gridLayout
@@ -36,48 +30,49 @@ Item {
             anchors.horizontalCenterOffset: 10
             Text {
                 id: firstname
-                text: qsTr("Firstname")
-                color: "#fff"
+                text: Resource.user.firstName
+                color: Resource.colors.white
                 Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: firstnameInput
-                placeholderText: placeholderTxt
+                placeholderText: Resource.placeholders.enter
                 Layout.alignment: Qt.AlignCenter
             }
             Text {
                 id: lastname
-                text: qsTr("Lastname")
-                color: "#fff"
+                text: Resource.user.lastName
+                color: Resource.colors.white
                 Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: lastnameInput
-                placeholderText: placeholderTxt
+                placeholderText: Resource.placeholders.enter
                 Layout.alignment: Qt.AlignCenter
             }
             Text {
                 id: phone
-                text: qsTr("Phone")
-                color: "#fff"
+                text: Resource.user.mobile
+                color: Resource.colors.white
                 Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: phoneInput
-                placeholderText: placeholderTxt
+                placeholderText: Resource.placeholders.enter
                 Layout.alignment: Qt.AlignCenter
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
             Text {
                 id: email
-                text: qsTr("Email")
-                color: "#fff"
+                text: Resource.user.email
+                color: Resource.colors.white
                 Layout.alignment: Qt.AlignRight
             }
             TextField {
                 id: emailInput
-                placeholderText: placeholderTxt
+                placeholderText: Resource.placeholders.enter
                 Layout.alignment: Qt.AlignCenter
+                inputMethodHints: Qt.ImhEmailCharactersOnly
             }
         }
     }
@@ -85,24 +80,25 @@ Item {
         anchors.top: infoRectangle.bottom
         height: 100
         width: parent.width
-        color: "#2C2C2C"
+        color: Resource.colors.darkGray
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             spacing: 10
 
             Rectangle {
-                width: 50
+                width: 150
                 height: 50
-                radius: 20.0
-                color: "#42a51c"
+                radius: 10.0
+                color: Resource.colors.green
                 Text {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         horizontalCenter: parent.horizontalCenter
                     }
-                    text: Add
-                    color: "white"
+                    font.pointSize: 14
+                    text: Resource.actions.create
+                    color: Resource.colors.white
                 }
                 MouseArea {
                     anchors.fill: parent
@@ -117,7 +113,7 @@ Item {
     }
 
     RoundButton {
-        text: Mdi.icon.iosClose
+        text: Resource.icons.iosClose
         font.pixelSize: 20
         highlighted: true
         Material.accent: Material.color(Material.BlueGrey)
@@ -126,6 +122,7 @@ Item {
         anchors.right: parent.right
         onClicked: {
             theDialog.close()
+            Api.refreshModel(theModel)
         }
     }
 }

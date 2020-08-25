@@ -1,19 +1,24 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 import QtQuick.Dialogs 1.2
+import QtQuick.LocalStorage 2.12
 import "ApiHelper.js" as Api
-import "Icons.js" as Mdi
+import "Res.js" as Resource
 
 Rectangle {
     width: 400
     height: 350
-    color: "#2C2C2C"
+    color: Resource.colors.darkGray
     property alias idContact: id.text
-    property string textColor: "#fff"
-    property string fullName: firstnameInput.text + " " + lastnameInput.text
-    Component.onCompleted: {
+    property bool canAdd: true
+
+    ContactModel {
+        id: contacts
+    }
+
+    function apiGetById() {
         var req = new XMLHttpRequest()
         req.open("GET",
                  "https://qtphone.herokuapp.com/contact/" + idContact, true)
@@ -29,8 +34,34 @@ Rectangle {
         req.send()
     }
 
-    ContactModel {
-        id: contacts
+    function dbGetById() {
+        var db = contacts.initDb()
+        try {
+            db.transaction(function (trx) {
+                var select = trx.executeSql(
+                            'SELECT * FROM Contacts WHERE id = ?', [idContact])
+                for (var i = 0; i < select.rows.length; i++) {
+                    firstnameInput.text = select.rows.item(i).firstname
+                    lastnameInput.text = select.rows.item(i).lastname
+                    emailInput.text = select.rows.item(i).phone
+                    mobileInput.text = select.rows.item(i).email
+                }
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    Component.onCompleted: {
+        switch (modelChooser.currentIndex) {
+        case 0:
+            apiGetById()
+            break
+        case 1:
+            dbGetById()
+            canAdd = false
+            break
+        }
     }
 
     Text {
@@ -38,16 +69,15 @@ Rectangle {
         text: id
         visible: false
     }
-
     Text {
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: gridLayout.top
             bottomMargin: 10
         }
-        text: qsTr("Editing")
+        text: Resource.actions.editing
         font.pointSize: 26
-        color: textColor
+        color: Resource.colors.white
     }
 
     GridLayout {
@@ -64,43 +94,41 @@ Rectangle {
         columnSpacing: 20
 
         Text {
-            text: qsTr("Firstname")
-            color: textColor
+            text: Resource.user.firstName
+            color: Resource.colors.white
         }
 
         TextField {
             id: firstnameInput
-            text: qsTr("placeholder")
         }
 
         Text {
-            text: qsTr("Lastname")
-            color: textColor
+            text: Resource.user.lastName
+            color: Resource.colors.white
         }
 
         TextField {
             id: lastnameInput
-            text: qsTr("placeholder")
         }
 
         Text {
-            text: qsTr("Phone")
-            color: textColor
+            text: Resource.user.mobile
+            color: Resource.colors.white
         }
 
         TextField {
             id: mobileInput
-            text: qsTr("placeholder")
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
         }
 
         Text {
-            text: qsTr("Email")
-            color: textColor
+            text: Resource.user.email
+            color: Resource.colors.white
         }
 
         TextField {
             id: emailInput
-            text: qsTr("placeholder")
+            inputMethodHints: Qt.ImhEmailCharactersOnly
         }
     }
     Row {
@@ -111,27 +139,34 @@ Rectangle {
         }
 
         Button {
-            text: qsTr("Close")
+            text: Resource.actions.close
             onClicked: {
                 editDialog.close()
                 Api.refreshModel(theModel)
+                contacts.refreshSavedContacts(dbModel)
             }
         }
 
         Button {
             id: applyBtn
-            text: qsTr("Apply")
+            text: Resource.actions.apply
             onClicked: {
-                Api.updateContact(idContact, firstnameInput.text,
-                                  lastnameInput.text, mobileInput.text,
-                                  emailInput.text)
-                console.log("edited")
+                if (modelChooser.currentIndex <= 0) {
+                    Api.updateContact(idContact, firstnameInput.text,
+                                      lastnameInput.text, mobileInput.text,
+                                      emailInput.text)
+                } else {
+                    contacts.updateContact(idContact, firstnameInput.text,
+                                           lastnameInput.text,
+                                           mobileInput.text, emailInput.text)
+                }
             }
         }
 
         Button {
             id: addIntoContactsBtn
-            text: qsTr("Add to my contacts")
+            text: Resource.actions.addToMyContact
+            visible: canAdd
             onClicked: {
                 contacts.insertContact(firstnameInput.text, lastnameInput.text,
                                        mobileInput.text, emailInput.text)

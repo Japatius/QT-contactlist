@@ -3,18 +3,22 @@ import QtGraphicalEffects 1.0
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
+import "Res.js" as Resource
 
 Item {
-    //    readonly property int animationDuration: 750
     property alias isRunning: animation.running
-    height: 100
-    width: 100
+    height: parent.height
+    width: parent.width
 
     BusyIndicator {
-        width: parent.width
-        height: parent.height
         id: animation
+        width: 100
+        height: 100
         Material.accent: Material.color(Material.BlueGrey)
         running: running
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            verticalCenter: parent.verticalCenter
+        }
     }
 }

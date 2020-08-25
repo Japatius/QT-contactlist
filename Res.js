@@ -1,4 +1,40 @@
-var icon = {
+// Resourcefile for colors, icons, placeholders etc..
+const appName = "ContactBook"
+const colors = {
+    "white": "#fff",
+    "green": "#42a51c",
+    "darkGray": "#2C2C2C"
+}
+
+const user = {
+    "firstName": "Firstname",
+    "lastName": "Lastname",
+    "email": "Email",
+    "mobile": "Mobile"
+}
+
+const actions = {
+    "create": "CREATE CONTACT",
+    "apply": "Apply",
+    "close": "Close",
+    "addToMyContact": "Add to my Contacts",
+    "editing": "Editing",
+    "wipeDatabase": "Wipe database"
+}
+
+const placeholders = {
+    "enter": "<ENTER>",
+    "search": "Search"
+}
+
+const database = {
+    "name": "ContactsDB",
+    "version": "1.0",
+    "description": "Database for contacts",
+    "limit": 1000000
+}
+
+const icons = {
     "ios-add": "\uf102",
     "ios-add-circle": "\uf101",
     "ios-add-circle-outline": "\uf100",
@@ -103,7 +139,7 @@ var icon = {
     "ios-contract": "\uf162",
     "ios-contrast": "\uf163",
     "ios-copy": "\uf41c",
-    "ios-create": "\uf165",
+    "iosCreate": "\uf165",
     "ios-crop": "\uf41e",
     "ios-cube": "\uf168",
     "ios-cut": "\uf16a",

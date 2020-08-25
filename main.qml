@@ -5,21 +5,16 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.12
 import QtQuick.Controls.Material 2.12
 import "ApiHelper.js" as Api
-import "Icons.js" as Mdi
+import "Res.js" as Resource
 
 ApplicationWindow {
     id: appWindow
     visible: true
     width: Screen.width
     height: Screen.height
-    //    width: 640
-    //    height: 480
-    title: qsTr("Scroll")
 
-    property string darkColor: "#242424"
-    property string whiteColor: "#fff"
-    property string titleName: "Contacts"
-    property bool isSearchMode: false
+    property bool loadingRequest: true
+    property bool searchToggle: false
 
     ContactModel {
         id: contacts
@@ -34,16 +29,19 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        Api.fetchContacts(theModel)
         contacts.initDb()
         contacts.initTable()
-        console.log(Screen.width, Screen.height)
-        Api.fetchContacts(theModel)
-        console.log("Cur index: ", modelChooser.currentIndex)
+        contacts.listContacts(dbModel)
     }
 
     FontLoader {
         id: fontLoader
         source: "ionicons.ttf"
+    }
+
+    LoadingIndicator {
+        isRunning: loadingRequest
     }
 
     header: ToolBar {
@@ -54,7 +52,7 @@ ApplicationWindow {
             ToolButton {
                 id: toolBtn
                 font.pixelSize: Qt.application.font.pixelSize * 1.6
-                text: Mdi.icon.mdMenu
+                text: Resource.icons.mdMenu
                 onClicked: {
                     drawer.open()
                 }
@@ -62,10 +60,6 @@ ApplicationWindow {
 
             ComboBox {
                 id: modelChooser
-                //                anchors {
-                //                    horizontalCenter: parent.
-                //                    verticalCenter: Qt.AlignVCenter
-                //                }
                 model: ListModel {
                     ListElement {
                         text: "Contacts"
@@ -74,28 +68,16 @@ ApplicationWindow {
                         text: "My Contacts"
                     }
                 }
-
-                onCurrentTextChanged: {
-                    console.log(modelChooser.currentIndex)
-                }
             }
             Material.background: Material.color(Material.BlueGrey)
             width: 200
             Layout.fillWidth: true
 
-            //            Label {
-            //                text: titleName
-            //                elide: Label.ElideRight
-            //                horizontalAlignment: Qt.AlignHCenter
-            //                verticalAlignment: Qt.AlignVCenter
-            //                Layout.fillWidth: true
-            //            }
             ToolButton {
                 font.pixelSize: Qt.application.font.pixelSize * 1.6
-                text: Mdi.icon.mdSearch
+                text: searchToggle ? Resource.icons.iosClose : Resource.icons.mdSearch
                 onClicked: {
-                    contacts.dropContacts()
-                    console.log("blii bloo nyt on kkona")
+                    searchToggle = !searchToggle
                 }
             }
         }
@@ -107,53 +89,29 @@ ApplicationWindow {
         spacing: 5
         width: parent.width
         height: parent.height
-        header: Rectangle {
-            id: searchRectangle
-            color: "#2C2C2C"
-            width: Screen.width
-            height: 50
-            z: 2
-            TextField {
-                id: searchField
-                color: "#fff"
-                width: parent.width
-                height: parent.height
-                padding: 5
-                inputMethodHints: Qt.ImhNoPredictiveText
-
-                onTextChanged: {
-                    Api.searchContacts(searchField.text)
-                }
-            }
+        headerPositioning: ListView.OverlayHeader
+        header: SearchField {
+            visible: searchToggle
         }
+
         onDragEnded: {
             if (lHeader.refresh) {
                 Api.refreshModel(theModel)
+                contacts.refreshSavedContacts(dbModel)
             }
-        }
-        onDragStarted: {
-            console.log(listView.contentY)
         }
 
         ListHeader {
-            visible: false
             id: lHeader
             y: -listView.contentY - height
         }
         model: modelChooser.currentIndex <= 0 ? theModel : dbModel
 
         delegate: ContactItem {
-            firstname: contactName
+            fullName: contactName
             contactId: idText
         }
 
-        //        delegate: Loader {
-        //            id: delegateLoader
-        //            sourceComponent: ContactItem {
-        //                firstname: contactName
-        //                contactId: idText
-        //            }
-        //        }
         section.property: "contactName"
         section.criteria: ViewSection.FirstCharacter
         section.delegate: Initial {}
@@ -174,14 +132,25 @@ ApplicationWindow {
         active: false
     }
 
+    Loader {
+        id: headsupLoader
+        sourceComponent: HeadsUpDialog {
+            onYes: {
+                contacts.dropContacts()
+                contacts.initTable()
+                contacts.refreshSavedContacts(dbModel)
+            }
+        }
+    }
+
     RoundButton {
-        text: qsTr("+")
+        text: Resource.icons.mdAdd
         highlighted: true
         Material.accent: Material.color(Material.BlueGrey)
         anchors.margins: 10
-        //        anchors.bottom: contactsView.bottom
         y: parent.height - height - 12
-        anchors.right: parent.right
+        z: 100
+        anchors.left: parent.left
         onClicked: {
             createContactLoader.active = false
             createContactLoader.active = true
@@ -193,51 +162,37 @@ ApplicationWindow {
         id: drawer
         width: appWindow.width * 0.66
         height: appWindow.height
-
+        Material.background: Material.color(Material.BlueGrey)
         Column {
+            id: drawerColumn
             anchors.fill: parent
             Label {
                 padding: 10
                 font.pointSize: 24
-                text: "Contact List"
+                text: Resource.appName
             }
             ItemDelegate {
-                text: qsTr("Contacts")
                 width: parent.width
-                leftPadding: 15
                 padding: 5
-                font.pointSize: 20
-                onClicked: {
-                    titleName = "Contacts"
-                    stack.push("main.qml")
-                    drawer.close()
-                }
-            }
-            ItemDelegate {
-                text: qsTr("My contacts")
-                width: parent.width
-                leftPadding: 15
-                padding: 5
-                font.pointSize: 20
-                onClicked: {
-                    titleName = "My Contacts"
-                    stack.push("MyContacts.qml")
-                    drawer.close()
+
+                Button {
+                    font.pointSize: 16
+                    text: Resource.actions.wipeDatabase
+                    background: Rectangle {
+                        radius: 10.0
+                        anchors.fill: parent
+                        color: Material.color(Material.Red)
+                    }
+
+                    onClicked: {
+                        headsupLoader.item.message = "Are you sure?"
+                        headsupLoader.item.open()
+                    }
                 }
             }
         }
     }
 
-    //    Item {
-    //        id: contactPos
-    //        Loader {
-    //            id: viewLoader
-    //            anchors.fill: parent
-    //            source: "ContactsView.qml"
-    //            asynchronous: true
-    //            visible: status == Loader.Ready
-    //        }
-    //    }
     StackView {
         id: stack
         initialItem: listView
